@@ -9,43 +9,41 @@ import SwiftUI
 
 struct ContentView: View {
     
-    @State private var valueToConvert = 0.0
-    @State private var selectedConversion = "ºC to ºF"
+    @State private var valueToConvert = 1.0
+    @State private var baseUnit = "m"
+    @State private var targetUnit = "m"
     
     @FocusState private var inputFocused: Bool
     
+    let units = ["mm", "cm", "m", "km"]
     
-    let conversion = ["ºC to ºF", "ºF to ºC", "Kg to lbs", "lbs to Kg"]
-    
-    var celciusToFarenheit: Double {
-        valueToConvert * 1.8 + 32.0
-    }
-    
-    var farenheitToCelcius: Double {
-        (valueToConvert - 32) * 1.8
-    }
-    
-    var kilogramsToPounds: Double {
-        valueToConvert * 2.205
-    }
-    
-    var poundsToKilograms: Double {
-        valueToConvert / 2.205
-    }
-    
-    var result: Double {
-        switch selectedConversion {
-        case "ºC to ºF":
-            return celciusToFarenheit
-        case "ºF to ºC":
-            return farenheitToCelcius
-        case "Kg to lbs":
-            return kilogramsToPounds
-        case "lbs to Kg":
-            return poundsToKilograms
-            
+    private var millimeters: Double {
+        switch baseUnit {
+        case "mm":
+            return valueToConvert
+        case "cm":
+            return valueToConvert * 10
+        case "m":
+            return valueToConvert * 1000
+        case "km":
+            return valueToConvert * 1_000_000
         default:
-            return 0
+            return 0.0
+        }
+    }
+    
+    private var result: Double {
+        switch targetUnit {
+        case "mm":
+            return millimeters
+        case "cm":
+            return millimeters / 10
+        case "m":
+            return millimeters / 1000
+        case "km":
+            return millimeters / 1_000_000
+        default:
+            return 0.0
         }
     }
     
@@ -56,24 +54,26 @@ struct ContentView: View {
                     TextField("Enter a value", value: $valueToConvert, format: .number)
                         .focused($inputFocused)
                         .keyboardType(.decimalPad)
-                } header: {
-                    Text("Enter a value to convert")
-                }
-                
-                Section {
-                    Picker("Conversion type", selection: $selectedConversion) {
-                        ForEach(conversion, id: \.self) {
+                    
+                    Picker("Convert from", selection: $baseUnit) {
+                        ForEach(units, id: \.self) {
                             Text($0)
                         }
                     }.pickerStyle(.segmented)
                 } header: {
-                    Text("Select conversion type")
+                    Text("Convert from")
                 }
                 
                 Section {
-                    Text(result, format: .number)
+                    Picker("Convert to", selection: $targetUnit) {
+                        ForEach(units, id: \.self) {
+                            Text($0)
+                        }
+                    }.pickerStyle(.segmented)
+                    
+                    Text(result.formatted())
                 } header: {
-                    Text("Result")
+                    Text("Convert to")
                 }
                 
                 
