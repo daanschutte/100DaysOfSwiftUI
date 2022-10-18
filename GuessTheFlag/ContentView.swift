@@ -85,8 +85,8 @@ struct ContentView: View {
     func flagTapped(_ number: Int) {
         let country = countries[number]
         if number == correctAnswer {
-            scoreTitle = "Correct"
             score += 1
+            scoreTitle = "Correct"
             resultMessage = "That was the flag for \(country)!\nScore: \(score)"
         } else {
             scoreTitle = "Wrong!"
