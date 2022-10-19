@@ -27,23 +27,42 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
             Form {
-                VStack(alignment: .leading, spacing: 0){
-                    Text("When do you want to wake up?")
-                        .font(.headline)
-                    DatePicker("Please enter a time", selection: $wakeUp, displayedComponents: .hourAndMinute)
-                        .labelsHidden()
+                Section {
+                    VStack(alignment: .leading, spacing: 0){
+                        Text("When do you want to wake up?")
+                            .font(.headline)
+
+                        DatePicker("Please enter a time", selection: $wakeUp, displayedComponents: .hourAndMinute)
+                            .labelsHidden()
+                    }
                 }
                 
-                VStack(alignment: .leading, spacing: 0){
-                    Text("Desired amount of sleep")
-                        .font(.headline)
-                    Stepper("\(sleepAmount.formatted()) hours", value: $sleepAmount, in: 4...12, step: 0.25)
+                Section {
+                    VStack(alignment: .leading, spacing: 0){
+                        Text("Desired amount of sleep")
+                            .font(.headline)
+
+                        Stepper("\(sleepAmount.formatted()) hours", value: $sleepAmount, in: 4...12, step: 0.25)
+                    }
                 }
                 
-                VStack(alignment: .leading, spacing: 0){
-                    Text("Daily coffee intake")
-                        .font(.headline)
-                    Stepper(coffeeAmount == 1 ? "1 cup" : "\(coffeeAmount) cups", value: $coffeeAmount, in: 0...20)
+                Section {
+                    VStack(alignment: .leading, spacing: 0){
+                        Text("Daily coffee intake")
+                            .font(.headline)
+                        
+                        Stepper(coffeeAmount == 1 ? "1 cup" : "\(coffeeAmount) cups", value: $coffeeAmount, in: 0...20)
+//                        Picker(coffeeAmount == 1 ? "1 cup" : "\(coffeeAmount) cups", selection: $coffeeAmount) {
+//                            ForEach(0..<21) {
+//                                Text("\($0)")
+//                            }
+//                        }
+//                        .pickerStyle(.wheel)
+                    }
+                }
+                
+                Section {
+                    
                 }
             }
             .navigationTitle("BetterRest")
