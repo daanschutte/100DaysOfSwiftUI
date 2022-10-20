@@ -36,8 +36,8 @@ struct ContentView: View {
     
     @State private var alertTitle = ""
     @State private var alertMessage = ""
-    @State private var showingAlert = false
     @State private var showingResult = false
+    @State private var showingGameOver = false
     
     @State private var score = 0
     @State private var roundsPlayed = 0
@@ -87,11 +87,11 @@ struct ContentView: View {
                     .padding()
                 }
                 
-            }.alert(alertTitle, isPresented: $showingAlert) {
+            }.alert(alertTitle, isPresented: $showingResult) {
                 Button("Continue", action: nextRound)
             } message: {
                 Text(alertMessage)
-            }.alert(alertTitle, isPresented: $showingResult) {
+            }.alert(alertTitle, isPresented: $showingGameOver) {
                 Button("Restart", action: reset)
             } message: {
                 Text(alertMessage)
@@ -112,7 +112,7 @@ struct ContentView: View {
             statusColor = .red
         }
         
-        showingAlert = true
+        showingResult = true
     }
     
     func playerWins() -> Bool {
@@ -129,15 +129,15 @@ struct ContentView: View {
     }
     
     func nextRound() {
+        statusColor = .accentColor
         shouldWin = Bool.random()
         systemMove = Int.random(in: 0..<3)
         roundsPlayed += 1
-        statusColor = .accentColor
-        
+
         if roundsPlayed >= maxRounds {
             alertTitle = "Game Over"
             alertMessage = "You were correct \(score)/\(maxRounds) times."
-            showingResult = true
+            showingGameOver = true
         }
     }
     
