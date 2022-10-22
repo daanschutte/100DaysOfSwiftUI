@@ -65,11 +65,15 @@ struct ContentView: View {
                         Button {
                             flagTapped(number)
                         } label: {
+                            let flagSelected = selectedFlag == number
+                            let flagNotSelected = selectedFlag >= 0 && !flagSelected
+                            
                             Image(countries[number])
                                 .renderingMode(.original)
                                 .clipShape(Capsule())
                                 .shadow(radius: 5)
-                                .rotation3DEffect(.degrees(selectedFlag == number ? 360 : 0), axis: (x: 0, y: 1, z: 0))
+                                .rotation3DEffect(.degrees(flagSelected ? 360 : 0), axis: (x: 0, y: 1, z: 0))
+                                .opacity(flagNotSelected ? 0.25 : 1)
                                 .animation(.linear(duration: 1), value: selectedFlag)
                         }
                     }
