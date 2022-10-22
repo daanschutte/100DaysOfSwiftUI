@@ -74,6 +74,7 @@ struct ContentView: View {
                                 .shadow(radius: 5)
                                 .rotation3DEffect(.degrees(flagSelected ? 360 : 0), axis: (x: 0, y: 1, z: 0))
                                 .opacity(flagNotSelected ? 0.25 : 1)
+                                .scaleEffect(flagNotSelected ? 0.8 : 1)
                                 .animation(.linear(duration: 1), value: selectedFlag)
                         }
                     }
