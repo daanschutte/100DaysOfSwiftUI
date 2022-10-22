@@ -33,6 +33,8 @@ struct ContentView: View {
     @State private var showingGameOver = false
     @State private var showingScore = false
     
+    @State private var selectedFlag = -1
+    
     let maxAttempts = 8
     
     var body: some View {
@@ -67,6 +69,8 @@ struct ContentView: View {
                                 .renderingMode(.original)
                                 .clipShape(Capsule())
                                 .shadow(radius: 5)
+                                .rotation3DEffect(.degrees(selectedFlag == number ? 360 : 0), axis: (x: 0, y: 1, z: 0))
+                                .animation(.linear(duration: 1), value: selectedFlag)
                         }
                     }
                 }
@@ -99,6 +103,9 @@ struct ContentView: View {
     }
     
     func flagTapped(_ number: Int) {
+        // for the spin animation
+        selectedFlag = number
+        
         let country = countries[number]
         if number == correctAnswer {
             score += 1
@@ -120,11 +127,13 @@ struct ContentView: View {
     func askQuestion() {
         countries.shuffle()
         correctAnswer = Int.random(in: 0...2)
+        selectedFlag = -1
     }
     
     func reset() {
         score = 0
         attempts = 0
+        askQuestion()
     }
 }
 
