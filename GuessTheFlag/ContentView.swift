@@ -7,10 +7,26 @@
 
 import SwiftUI
 
+
+struct FlagImage: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .clipShape(RoundedRectangle(cornerRadius: 5))
+            .shadow(radius: 5)
+    }
+}
+
+extension View {
+    func formattedFlag() -> some View {
+        modifier(FlagImage())
+    }
+}
+
 struct ContentView: View {
     @State private var attempts = 0
     @State private var correctAnswer = Int.random(in: 0...2)
     @State private var countries = ["Estonia", "France", "Germany", "Ireland", "Italy", "Nigeria", "Poland", "Russia", "Spain", "UK", "US"].shuffled()
+    
     @State private var resultMessage = ""
     @State private var score = 0
     @State private var scoreTitle = ""
@@ -31,7 +47,7 @@ struct ContentView: View {
                 Spacer()
                 
                 Text("Guess the Flag")
-                    .font(.largeTitle.bold())
+                    .font(.system(size: 40).bold())
                     .foregroundColor(.white)
                 
                 VStack(spacing: 15) {
@@ -94,7 +110,7 @@ struct ContentView: View {
         }
         
         showingScore = true
-
+        
         attempts += 1
         if attempts >= maxAttempts {
             showingGameOver = true
