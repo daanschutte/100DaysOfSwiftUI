@@ -31,10 +31,15 @@ struct ContentView: View {
     
     var body: some View {
         VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundColor(.accentColor)
-            Text("Hello, world!")
+            //            Stepper("Which times table would you like to test?", value: $baseNumber)
+            Stepper(value: $baseNumber, in: 1...12, step: 1) {
+                HStack{
+                    Text("Which times table?")
+                    Spacer()
+                    Text("\(baseNumber)")
+                }
+            }
+            .padding()
         }
     }
     
