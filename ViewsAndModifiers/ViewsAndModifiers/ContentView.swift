@@ -8,14 +8,16 @@
 import SwiftUI
 
 struct ContentView: View {
+    
+    let motto1 = Text("Draco dormiens")
+    let motto2 = Text("Munquam titillandus")
+    
     var body: some View {
         VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundColor(.accentColor)
-            Text("Hello, world!")
+            motto1.foregroundColor(.red)
+            motto2.foregroundColor(.blue)
+            
         }
-        .padding()
     }
 }
 
