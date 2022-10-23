@@ -17,53 +17,71 @@ struct ContentView: View {
     @State private var numQuestions = 5
     @State private var numQuestionsAsked = 0
     @State private var questions = [Question]()
+      
+    @State private var gameInProgress = false
     
     var body: some View {
-        VStack {
-            //            Stepper("Which times table would you like to test?", value: $baseNumber)
-            Stepper(value: $baseNumber, in: 1...12, step: 1) {
-                HStack{
-                    Text("Which times table?")
-                    Spacer()
-                    Text("\(baseNumber)")
+        
+        // TODO: Extract into own view
+        if !gameInProgress {
+            VStack {
+                Stepper(value: $baseNumber, in: 1...12, step: 1) {
+                    HStack{
+                        Text("Which times table?")
+                        Spacer()
+                        Text("\(baseNumber)")
+                    }
                 }
-            }
-            .padding(.horizontal)
-            
-            Stepper(value: $numQuestions, in: 5...15, step: 5) {
-                HStack{
-                    Text("How many questions?")
-                    Spacer()
-                    Text("\(numQuestions)")
+                .padding(.horizontal)
+                
+                Stepper(value: $numQuestions, in: 5...15, step: 5) {
+                    HStack{
+                        Text("How many questions?")
+                        Spacer()
+                        Text("\(numQuestions)")
+                    }
                 }
+                .padding(.horizontal)
+                
+                Button("Start") {
+                    startGame()
+                }
+                .buttonStyle(.borderedProminent)
             }
-            .padding(.horizontal)
+        }
+        
+        // TODO: Extract into own view
+        if gameInProgress {
             
-            Button("Start") {
-                startGame()
+            // TODO
+            
+            Button("Reset Game") {
+                reset()
             }
             .buttonStyle(.borderedProminent)
         }
     }
     
     func startGame() {
-        createTimesTable()
+        gameInProgress = true
+        createQuestionList()
     }
     
     
-    func createTimesTable() {
-        for n in 1..<12 {
-            let question = Question(problem: "\(baseNumber) x \(n) = ?", answer: baseNumber * n)
-            questions.append(question)
-        }
+    func createRandomQuestion(base: Int) -> Question {
+        let n = Int.random(in: 1...12)
+        return Question(problem: "\(base) x \(n) = ?", answer: baseNumber * n)
     }
     
     func createQuestionList() {
-        
+        for _ in 0..<numQuestions {
+            questions.append(createRandomQuestion(base: baseNumber))
+        }
     }
     
     
     func reset() {
+        gameInProgress = false
         baseNumber = 1
         numQuestions = 5
         numQuestionsAsked = 0
