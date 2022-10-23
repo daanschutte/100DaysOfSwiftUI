@@ -12,17 +12,6 @@ struct Question {
     let answer: Int
 }
 
-extension Question {
-    func createTimesTable(base: Int) -> [Question] {
-        var questions = [Question]()
-        for n in 1..<12 {
-            let question = Question(problem: "\(base) x \(n) = ?", answer: base * n)
-            questions.append(question)
-        }
-        return questions
-    }
-}
-
 struct ContentView: View {
     @State private var baseNumber = 1
     @State private var numQuestions = 5
@@ -39,9 +28,40 @@ struct ContentView: View {
                     Text("\(baseNumber)")
                 }
             }
-            .padding()
+            .padding(.horizontal)
+            
+            Stepper(value: $numQuestions, in: 5...15, step: 5) {
+                HStack{
+                    Text("How many questions?")
+                    Spacer()
+                    Text("\(numQuestions)")
+                }
+            }
+            .padding(.horizontal)
+            
+            Button("Start") {
+                startGame()
+            }
+            .buttonStyle(.borderedProminent)
         }
     }
+    
+    func startGame() {
+        createTimesTable()
+    }
+    
+    
+    func createTimesTable() {
+        for n in 1..<12 {
+            let question = Question(problem: "\(baseNumber) x \(n) = ?", answer: baseNumber * n)
+            questions.append(question)
+        }
+    }
+    
+    func createQuestionList() {
+        
+    }
+    
     
     func reset() {
         baseNumber = 1
