@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct Question {
+    let id: UUID = UUID.init()
     let problem: String
     let answer: Int
 }
@@ -52,13 +53,22 @@ struct ContentView: View {
         
         // TODO: Extract into own view
         if gameInProgress {
-            
-            // TODO
-            
-            Button("Reset Game") {
-                reset()
+            VStack {
+                // TODO
+                
+                List(questions, id: \.self.id) { question in
+                    HStack {
+                        Text(question.problem)
+                        // TODO allow user to enter answer
+                    }
+                }
+                
+                
+                Button("Reset Game") {
+                    reset()
+                }
+                .buttonStyle(.borderedProminent)
             }
-            .buttonStyle(.borderedProminent)
         }
     }
     
@@ -70,7 +80,7 @@ struct ContentView: View {
     
     func createRandomQuestion(base: Int) -> Question {
         let n = Int.random(in: 1...12)
-        return Question(problem: "\(base) x \(n) = ?", answer: baseNumber * n)
+        return Question(problem: "\(base) x \(n) = ", answer: baseNumber * n)
     }
     
     func createQuestionList() {
@@ -83,7 +93,6 @@ struct ContentView: View {
     func reset() {
         gameInProgress = false
         baseNumber = 1
-        numQuestions = 5
         numQuestionsAsked = 0
         questions = [Question]()
     }
