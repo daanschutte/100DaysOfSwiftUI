@@ -11,6 +11,13 @@ struct Question {
     let id: UUID = UUID.init()
     let problem: String
     let answer: Int
+    var userAttempt: String = ""
+}
+
+extension Question: Identifiable {
+    public func userAnswer() -> Int {
+        Int(self.userAttempt) ?? -1
+    }
 }
 
 struct ContentView: View {
@@ -18,7 +25,7 @@ struct ContentView: View {
     @State private var numQuestions = 5
     @State private var numQuestionsAsked = 0
     @State private var questions = [Question]()
-      
+    
     @State private var gameInProgress = false
     
     var body: some View {
@@ -51,15 +58,14 @@ struct ContentView: View {
             }
         }
         
-        // TODO: Extract into own view
         if gameInProgress {
             VStack {
-                // TODO
-                
-                List(questions, id: \.self.id) { question in
+                List($questions) { $question in
                     HStack {
                         Text(question.problem)
-                        // TODO allow user to enter answer
+                        TextField("Answer", text: $question.userAttempt)
+                            .disableAutocorrection(true)
+                            .keyboardType(.numberPad)
                     }
                 }
                 
@@ -70,6 +76,7 @@ struct ContentView: View {
                 .buttonStyle(.borderedProminent)
             }
         }
+        
     }
     
     func startGame() {
@@ -87,8 +94,11 @@ struct ContentView: View {
         for _ in 0..<numQuestions {
             questions.append(createRandomQuestion(base: baseNumber))
         }
+        
+        questions.sort {
+            return $0.answer < $1.answer
+        }
     }
-    
     
     func reset() {
         gameInProgress = false
