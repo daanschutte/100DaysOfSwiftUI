@@ -15,18 +15,20 @@ struct Question {
 }
 
 extension Question: Identifiable {
-    public func userAnswer() -> Int {
-        Int(self.userAttempt) ?? -1
+    func isCorrect() -> Bool {
+        return (Int(self.userAttempt) ?? -1) == self.answer
     }
 }
 
 struct ContentView: View {
     @State private var baseNumber = 1
     @State private var numQuestions = 5
-    @State private var numQuestionsAsked = 0
     @State private var questions = [Question]()
     
     @State private var gameInProgress = false
+    @State private var showingScore = false
+    
+    @State private var total = 0
     
     var body: some View {
         
@@ -50,7 +52,7 @@ struct ContentView: View {
                     }
                 }
                 .padding(.horizontal)
-                
+
                 Button("Start") {
                     startGame()
                 }
@@ -58,6 +60,7 @@ struct ContentView: View {
             }
         }
         
+        // TODO: this should be if/else or some better construct
         if gameInProgress {
             VStack {
                 List($questions) { $question in
@@ -66,14 +69,28 @@ struct ContentView: View {
                         TextField("Answer", text: $question.userAttempt)
                             .disableAutocorrection(true)
                             .keyboardType(.numberPad)
+                        if !question.userAttempt.isEmpty {
+                            Image(systemName: question.isCorrect() ? "hand.thumbsup" : "hand.thumbsdown")
+                        }
                     }
+                    
                 }
                 
+                Button("Submit") {
+                    calculateScore()
+                    showingScore = true
+                }
+                .buttonStyle(.borderedProminent)
+                .alert("Score", isPresented: $showingScore) {
+                } message: {
+                    Text("You had \(total)/\(questions.count) correct!")
+                }
+
                 
+                Spacer()
                 Button("Reset Game") {
                     reset()
                 }
-                .buttonStyle(.borderedProminent)
             }
         }
         
@@ -91,6 +108,7 @@ struct ContentView: View {
     }
     
     func createQuestionList() {
+        questions.removeAll()
         for _ in 0..<numQuestions {
             questions.append(createRandomQuestion(base: baseNumber))
         }
@@ -100,11 +118,20 @@ struct ContentView: View {
         }
     }
     
+    func calculateScore() {
+        for question in questions {
+            if question.isCorrect() {
+                total += 1
+            }
+        }
+    }
+    
     func reset() {
-        gameInProgress = false
         baseNumber = 1
-        numQuestionsAsked = 0
-        questions = [Question]()
+        numQuestions = 5
+        gameInProgress = false
+        showingScore = false
+        total = 0
     }
 }
 
