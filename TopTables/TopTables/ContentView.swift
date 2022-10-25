@@ -27,6 +27,7 @@ struct ContentView: View {
     
     @State private var gameInProgress = false
     @State private var showingScore = false
+    @State private var randomQuestions = false
     
     @State private var total = 0
     
@@ -52,11 +53,15 @@ struct ContentView: View {
                     }
                 }
                 .padding(.horizontal)
+                
+                Toggle("Random questions?", isOn: $randomQuestions)
+                    .padding(.horizontal)
 
                 Button("Start") {
                     startGame()
                 }
                 .buttonStyle(.borderedProminent)
+                .padding()
             }
         }
         
@@ -75,6 +80,7 @@ struct ContentView: View {
                     }
                     
                 }
+                .clipShape(RoundedRectangle(cornerRadius: 5))
                 
                 Button("Calculate Score") {
                     calculateScore()
@@ -101,32 +107,16 @@ struct ContentView: View {
     
     func startGame() {
         gameInProgress = true
-        createQuestionList()
+        createQuestionList(randomQuestions)
     }
     
-    func createQuestionList() {
+    func createQuestionList(_ random: Bool = false) {
         questions.removeAll()
-        for n in 1...numQuestions {
-            let question = Question(problem: "\(baseNumber) x \(n)", answer: baseNumber * n)
+        for i in 1...numQuestions {
+            let n = random ? Int.random(in: 1...numQuestions) : i
+            let question = Question(problem: "\(baseNumber) x \(n) = ", answer: baseNumber * n)
             questions.append(question)
         }
-    }
-    
-    
-    func createRandomQuestionList() {
-        questions.removeAll()
-        for _ in 0..<numQuestions {
-            questions.append(createRandomQuestion(base: baseNumber))
-        }
-        
-        questions.sort {
-            return $0.answer < $1.answer
-        }
-    }
-    
-    func createRandomQuestion(base: Int) -> Question {
-        let n = Int.random(in: 1...12)
-        return Question(problem: "\(base) x \(n) = ", answer: baseNumber * n)
     }
     
     func calculateScore() {
