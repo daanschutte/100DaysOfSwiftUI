@@ -46,7 +46,7 @@ struct ContentView: View {
                 
                 Stepper(value: $numQuestions, in: 5...15, step: 5) {
                     HStack{
-                        Text("How many questions?")
+                        Text("Up to which multiple?")
                         Spacer()
                         Text("\(numQuestions)")
                     }
@@ -76,21 +76,24 @@ struct ContentView: View {
                     
                 }
                 
-                Button("Submit") {
+                Button("Calculate Score") {
                     calculateScore()
                     showingScore = true
                 }
                 .buttonStyle(.borderedProminent)
                 .alert("Score", isPresented: $showingScore) {
                 } message: {
-                    Text("You had \(total)/\(questions.count) correct!")
+                    Text("You have \(total)/\(questions.count) correct answers!")
                 }
+                .padding(15)
 
                 
                 Spacer()
-                Button("Reset Game") {
+                Button("Reset Game", role: .destructive) {
                     reset()
                 }
+                
+                .padding(.horizontal)
             }
         }
         
@@ -101,13 +104,16 @@ struct ContentView: View {
         createQuestionList()
     }
     
-    
-    func createRandomQuestion(base: Int) -> Question {
-        let n = Int.random(in: 1...12)
-        return Question(problem: "\(base) x \(n) = ", answer: baseNumber * n)
+    func createQuestionList() {
+        questions.removeAll()
+        for n in 1...numQuestions {
+            let question = Question(problem: "\(baseNumber) x \(n)", answer: baseNumber * n)
+            questions.append(question)
+        }
     }
     
-    func createQuestionList() {
+    
+    func createRandomQuestionList() {
         questions.removeAll()
         for _ in 0..<numQuestions {
             questions.append(createRandomQuestion(base: baseNumber))
@@ -116,6 +122,11 @@ struct ContentView: View {
         questions.sort {
             return $0.answer < $1.answer
         }
+    }
+    
+    func createRandomQuestion(base: Int) -> Question {
+        let n = Int.random(in: 1...12)
+        return Question(problem: "\(base) x \(n) = ", answer: baseNumber * n)
     }
     
     func calculateScore() {
@@ -127,10 +138,8 @@ struct ContentView: View {
     }
     
     func reset() {
-        baseNumber = 1
-        numQuestions = 5
         gameInProgress = false
-        showingScore = false
+        baseNumber = 1
         total = 0
     }
 }
