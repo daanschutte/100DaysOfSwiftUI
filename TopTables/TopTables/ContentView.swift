@@ -27,7 +27,9 @@ struct ContentView: View {
     
     @State private var gameInProgress = false
     @State private var showingScore = false
-    @State private var randomQuestions = false
+    @State private var showingResults = false
+    
+    @State private var randomTable = false
     
     @State private var total = 0
     
@@ -36,27 +38,43 @@ struct ContentView: View {
         // TODO: Extract into own view
         if !gameInProgress {
             VStack {
-                Stepper(value: $baseNumber, in: 1...12, step: 1) {
-                    HStack{
-                        Text("Which times table?")
-                        Spacer()
-                        Text("\(baseNumber)")
+                HStack {
+                    Text("x Table")
+                        .font(.headline.bold())
+                        .padding(.trailing)
+                    
+                    if !randomTable {
+                        Stepper(
+                            value: $baseNumber,
+                            in: 1...12,
+                            step: 1) {
+                                Text("\(baseNumber)")
+                                    .font(.subheadline)
+                                    .frame(maxWidth: .infinity, alignment: .center)
+                            }.padding(.horizontal)
                     }
+                    
+                    Toggle(isOn: $randomTable) {
+                        Text("Random")
+                            .font(.subheadline)
+                            .frame(maxWidth: .infinity, alignment: .bottomTrailing)
+                    }.padding(.leading)
                 }
                 .padding(.horizontal)
                 
-                Stepper(value: $numQuestions, in: 5...15, step: 5) {
-                    HStack{
-                        Text("Up to which multiple?")
-                        Spacer()
-                        Text("\(numQuestions)")
+                HStack {
+                    Stepper(value: $numQuestions, in: 5...15, step: 5) {
+                        HStack{
+                            Text("Questions")
+                                .font(.headline.bold())
+                            Spacer()
+                            Text("\(numQuestions)")
+                                .font(.subheadline)
+                        }
                     }
-                }
-                .padding(.horizontal)
-                
-                Toggle("Random questions?", isOn: $randomQuestions)
                     .padding(.horizontal)
-
+                    Spacer()
+                }
                 Button("Start") {
                     startGame()
                 }
@@ -71,10 +89,10 @@ struct ContentView: View {
                 List($questions) { $question in
                     HStack {
                         Text(question.problem)
-                        TextField("Answer", text: $question.userAttempt)
+                        TextField("?", text: $question.userAttempt)
                             .disableAutocorrection(true)
                             .keyboardType(.numberPad)
-                        if !question.userAttempt.isEmpty {
+                        if showingResults && !question.userAttempt.isEmpty {
                             Image(systemName: question.isCorrect() ? "hand.thumbsup" : "hand.thumbsdown")
                         }
                     }
@@ -85,6 +103,7 @@ struct ContentView: View {
                 Button("Calculate Score") {
                     calculateScore()
                     showingScore = true
+                    showingResults = true
                 }
                 .buttonStyle(.borderedProminent)
                 .alert("Score", isPresented: $showingScore) {
@@ -92,30 +111,32 @@ struct ContentView: View {
                     Text("You have \(total)/\(questions.count) correct answers!")
                 }
                 .padding(15)
-
+                
                 
                 Spacer()
                 Button("Reset Game", role: .destructive) {
                     reset()
                 }
-                
                 .padding(.horizontal)
             }
         }
-        
     }
     
     func startGame() {
         gameInProgress = true
-        createQuestionList(randomQuestions)
+        createQuestionList(randomTable)
     }
     
     func createQuestionList(_ random: Bool = false) {
         questions.removeAll()
-        for i in 1...numQuestions {
-            let n = random ? Int.random(in: 1...numQuestions) : i
-            let question = Question(problem: "\(baseNumber) x \(n) = ", answer: baseNumber * n)
+        for n in 1...numQuestions {
+            let base = randomTable ? Int.random(in: 1...12) : baseNumber
+            let question = Question(problem: "\(base) x \(n) =", answer: base * n)
             questions.append(question)
+        }
+        
+        if random {
+            questions.shuffle()
         }
     }
     
@@ -129,6 +150,7 @@ struct ContentView: View {
     
     func reset() {
         gameInProgress = false
+        showingResults = false
         baseNumber = 1
         total = 0
     }
