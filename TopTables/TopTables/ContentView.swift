@@ -30,7 +30,6 @@ struct SettingsView: View {
     
     @State private var randomTable = false
     @State private var randomMultiple = false
-    @State private var quizMode = false
     
     var body: some View {
         NavigationStack {
@@ -64,7 +63,6 @@ struct SettingsView: View {
                     Toggle("Quiz mode", isOn: Binding(
                         get: { randomMultiple && randomTable },
                         set: { newValue in
-                            quizMode = newValue
                             randomTable = newValue
                             randomMultiple = newValue
                         })
@@ -96,8 +94,9 @@ struct SettingsView: View {
     func createQuestionList() {
         questions.removeAll()
         
+        let quizMode = randomTable && randomMultiple
         let b = randomTable ? Int.random(in: 1...12) : base
-
+        
         for n in 1...numQuestions {
             let b = quizMode ? Int.random(in: 1...12) : b
             let n = randomMultiple || quizMode ? Int.random(in: 1...12) : n
