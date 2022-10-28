@@ -158,9 +158,11 @@ struct ContentView: View {
             VStack {
                 if gameInProgress {
                     GameView(base: $base, gameInProgress: $gameInProgress, questions: $questions, reset: reset)
-                        .padding()
                 } else  {
                     SettingsView(base: $base, gameInProgress: $gameInProgress, questions: $questions)
+                        .padding(.top, 25)
+                    
+                    Spacer()
                 }
             }
             .navigationTitle(Text("Table Monster"))
