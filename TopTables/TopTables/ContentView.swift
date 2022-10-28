@@ -75,11 +75,13 @@ struct SettingsView: View {
                 Section {
                     HStack {
                         Stepper(value: $numQuestions, in: 5...15, step: 5) {
-                            Text("\(numQuestions) questions")
+                            HStack {
+                                Text("Number of questions")
+                                Spacer()
+                                Text("\(numQuestions)")
+                            }
                         }
                     }
-                } header: {
-                    Text("Number of questions")
                 }
             }
             
