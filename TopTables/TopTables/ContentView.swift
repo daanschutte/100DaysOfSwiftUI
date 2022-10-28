@@ -64,6 +64,14 @@ struct SettingsView: View {
                 }
                 
                 Section {
+                    Toggle("Quiz mode", isOn: Binding(
+                        get: { randomMultiple && randomTable },
+                        set: { newValue in
+                            randomTable = newValue
+                            randomMultiple = newValue
+                        })
+                    )
+
                     HStack {
                         Stepper(value: $numQuestions, in: 5...15, step: 5) {
                             HStack {
@@ -74,13 +82,6 @@ struct SettingsView: View {
                         }
                     }
                     
-                    Toggle("Quiz mode", isOn: Binding(
-                        get: { randomMultiple && randomTable },
-                        set: { newValue in
-                            randomTable = newValue
-                            randomMultiple = newValue
-                        })
-                    )
                 } header: {
                     Text("Settings")
                 }
