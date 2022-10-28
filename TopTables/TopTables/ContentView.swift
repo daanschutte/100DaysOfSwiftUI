@@ -91,6 +91,7 @@ struct SettingsView: View {
                 startGame()
             }
             .buttonStyle(.borderedProminent)
+            .controlSize(.large)
             .padding()
         }
     }
@@ -139,7 +140,9 @@ struct GameView: View {
                         .disableAutocorrection(true)
                         .keyboardType(.numberPad)
                     if showingResults && !question.userAttempt.isEmpty {
-                        Image(systemName: question.isCorrect() ? "hand.thumbsup" : "hand.thumbsdown")
+                        let correct = question.isCorrect()
+                        Image(systemName: correct ? "hand.thumbsup" : "hand.thumbsdown")
+                            .foregroundColor(correct ? .green : .red)
                     }
                 }
             }
@@ -150,12 +153,13 @@ struct GameView: View {
                 showingResults = true
             }
             .buttonStyle(.borderedProminent)
-            .disabled(showingResults)
+            .controlSize(.large)
+            .disabled(showingResults && score > 0)
             .alert("Score", isPresented: $showingScore) {
             } message: {
                 Text("You have \(score)/\(questions.count) correct answers!")
             }
-            .padding(15)
+            .padding(10)
             
             
             Spacer()
@@ -165,7 +169,9 @@ struct GameView: View {
                 
                 reset()
             }
-            .padding(.horizontal)
+            .buttonStyle(.bordered)
+            .controlSize(.large)
+            .padding(.bottom, 30)
         }
     }
     
