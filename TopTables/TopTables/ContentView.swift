@@ -47,17 +47,21 @@ struct SettingsView: View {
                             }
                     }
                     
-                    Toggle(isOn: $randomTable) {
-                        Text("Random table")
-                    }
+                    Toggle("Random table", isOn: Binding(
+                        get: { randomTable || quizMode },
+                        set: { newValue in
+                            randomTable = newValue
+                        })
+                    )
                     
-                    Toggle(isOn: $randomMultiple) {
-                        Text("Random multiple")
-                    }
+                    Toggle("Random multiple", isOn: Binding(
+                        get: { randomMultiple || quizMode },
+                        set: { newValue in
+                            randomMultiple = newValue
+                        })
+                    )
                     
-                    Toggle(isOn: $quizMode) {
-                        Text("Quiz mode")
-                    }
+                    Toggle("Quiz mode", isOn: $quizMode)
                 } header: {
                     Text("Multiplication Table")
                 }
