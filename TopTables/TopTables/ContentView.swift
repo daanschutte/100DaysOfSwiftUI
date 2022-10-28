@@ -94,7 +94,7 @@ struct GameView: View {
     
     @State private var showingScore = false
     @State private var showingResults = false
-    @State private var total = 0
+    @State private var score = 0
     
     var reset: () -> Void
     
@@ -111,8 +111,6 @@ struct GameView: View {
                     }
                 }
             }
-            .clipShape(RoundedRectangle(cornerRadius: 5))
-            
             
             Button("Calculate Score") {
                 calculateScore()
@@ -122,14 +120,14 @@ struct GameView: View {
             .buttonStyle(.borderedProminent)
             .alert("Score", isPresented: $showingScore) {
             } message: {
-                Text("You have \(total)/\(questions.count) correct answers!")
+                Text("You have \(score)/\(questions.count) correct answers!")
             }
             .padding(15)
             
             
             Spacer()
             Button("Reset Game", role: .destructive) {
-                total = 0
+                score = 0
                 showingResults = false
                 
                 reset()
@@ -139,11 +137,13 @@ struct GameView: View {
     }
     
     func calculateScore() {
+        var result = 0
         for question in questions {
             if question.isCorrect() {
-                total += 1
+                result += 1
             }
         }
+        score = result
     }
 }
 
@@ -151,17 +151,19 @@ struct ContentView: View {
     @State private var base = 1
     @State private var gameInProgress = false
     @State private var questions = [Question]()
-        
+    
     var body: some View {
         
         NavigationStack {
             VStack {
                 if gameInProgress {
                     GameView(base: $base, gameInProgress: $gameInProgress, questions: $questions, reset: reset)
+                        .padding()
                 } else  {
                     SettingsView(base: $base, gameInProgress: $gameInProgress, questions: $questions)
                 }
-            }.navigationTitle(Text("Table Monster"))
+            }
+            .navigationTitle(Text("Table Monster"))
         }
     }
     
