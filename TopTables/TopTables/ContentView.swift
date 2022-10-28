@@ -48,20 +48,28 @@ struct SettingsView: View {
                     }
                     
                     Toggle("Random table", isOn: Binding(
-                        get: { randomTable || quizMode },
+                        get: { randomTable },
                         set: { newValue in
                             randomTable = newValue
                         })
                     )
                     
                     Toggle("Random multiple", isOn: Binding(
-                        get: { randomMultiple || quizMode },
+                        get: { randomMultiple },
                         set: { newValue in
                             randomMultiple = newValue
                         })
                     )
                     
-                    Toggle("Quiz mode", isOn: $quizMode)
+                    Toggle("Quiz mode", isOn: Binding(
+                        get: { randomMultiple && randomTable },
+                        set: { newValue in
+                            quizMode = newValue
+                            randomTable = newValue
+                            randomMultiple = newValue
+                        })
+                    )
+                    
                 } header: {
                     Text("Multiplication Table")
                 }
