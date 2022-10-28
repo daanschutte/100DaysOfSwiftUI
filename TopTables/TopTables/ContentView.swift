@@ -27,8 +27,10 @@ struct SettingsView: View {
     @Binding var questions: [Question]
     
     @State private var numQuestions = 5
+    
     @State private var randomTable = false
-    @State private var randomizeAll = false
+    @State private var randomMultiple = false
+    @State private var quizMode = false
     
     var body: some View {
         NavigationStack {
@@ -49,7 +51,11 @@ struct SettingsView: View {
                         Text("Random table")
                     }
                     
-                    Toggle(isOn: $randomizeAll) {
+                    Toggle(isOn: $randomMultiple) {
+                        Text("Random multiple")
+                    }
+                    
+                    Toggle(isOn: $quizMode) {
                         Text("Quiz mode")
                     }
                 } header: {
@@ -75,23 +81,26 @@ struct SettingsView: View {
         }
     }
     
-    func createQuestionList(randomTable: Bool, randomizeAll: Bool) {
+    func createQuestionList() {
         questions.removeAll()
+        
+        let b = randomTable ? Int.random(in: 1...12) : base
+
         for n in 1...numQuestions {
-            let base = randomTable ? Int.random(in: 1...12) : base
-            let n = randomizeAll ? Int.random(in: 1...12) : n
-            let question = Question(problem: "\(base) x \(n) =", answer: base * n)
+            let b = quizMode ? Int.random(in: 1...12) : b
+            let n = randomMultiple || quizMode ? Int.random(in: 1...12) : n
+            let question = Question(problem: "\(b) x \(n) =", answer: b * n)
             questions.append(question)
         }
         
-        if randomizeAll {
+        if randomMultiple {
             questions.shuffle()
         }
     }
     
     func startGame() {
         gameInProgress = true
-        createQuestionList(randomTable: randomTable, randomizeAll: randomizeAll)
+        createQuestionList()
     }
 }
 
