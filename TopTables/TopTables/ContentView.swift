@@ -148,6 +148,7 @@ struct GameView: View {
                 showingResults = true
             }
             .buttonStyle(.borderedProminent)
+            .disabled(showingResults)
             .alert("Score", isPresented: $showingScore) {
             } message: {
                 Text("You have \(score)/\(questions.count) correct answers!")
