@@ -59,15 +59,6 @@ struct SettingsView: View {
                             randomMultiple = newValue
                         })
                     )
-                    
-                    Toggle("Quiz mode", isOn: Binding(
-                        get: { randomMultiple && randomTable },
-                        set: { newValue in
-                            randomTable = newValue
-                            randomMultiple = newValue
-                        })
-                    )
-                    
                 } header: {
                     Text("Multiplication Table")
                 }
@@ -82,6 +73,16 @@ struct SettingsView: View {
                             }
                         }
                     }
+                    
+                    Toggle("Quiz mode", isOn: Binding(
+                        get: { randomMultiple && randomTable },
+                        set: { newValue in
+                            randomTable = newValue
+                            randomMultiple = newValue
+                        })
+                    )
+                } header: {
+                    Text("Settings")
                 }
             }
             
