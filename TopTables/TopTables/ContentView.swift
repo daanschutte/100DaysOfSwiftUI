@@ -27,39 +27,47 @@ struct SettingsView: View {
     @Binding var questions: [Question]
     
     @State private var numQuestions = 5
-    @State private var random = false
+    @State private var randomTable = false
+    @State private var randomizeAll = false
     
     var body: some View {
-        VStack {
-            HStack {
-                if !random {
-                    Stepper(
-                        value: $base,
-                        in: 1...12,
-                        step: 1) {
-                            Text("\(base) x Table")
-                                .font(.headline.bold())
-                        }
+        NavigationStack {
+            List {
+                Section {
+                    if randomTable {
+                        Text("? x Table")
+                    } else {
+                        Stepper(
+                            value: $base,
+                            in: 1...12,
+                            step: 1) {
+                                Text("\(base) x Table")
+                            }
+                    }
+                    
+                    Toggle(isOn: $randomTable) {
+                        Text("Random table")
+                    }
+                    
+                    Toggle(isOn: $randomizeAll) {
+                        Text("Quiz mode")
+                    }
+                } header: {
+                    Text("Multiplication Table")
                 }
                 
-                Toggle(isOn: $random) {
-                    Text("Random")
-                        .font(.subheadline)
-                        .frame(maxWidth: .infinity, alignment: .trailing)
-                }.padding(.leading)
-            }
-            .padding(.horizontal)
-            
-            HStack {
-                Stepper(value: $numQuestions, in: 5...15, step: 5) {
-                    Text("\(numQuestions) questions")
-                        .font(.headline.bold())
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                Section {
+                    HStack {
+                        Stepper(value: $numQuestions, in: 5...15, step: 5) {
+                            Text("\(numQuestions) questions")
+                        }
+                    }
+                } header: {
+                    Text("Number of questions")
                 }
-                .padding(.horizontal)
             }
             
-            Button("Start") {
+            Button("Start Game") {
                 startGame()
             }
             .buttonStyle(.borderedProminent)
@@ -67,23 +75,23 @@ struct SettingsView: View {
         }
     }
     
-    func createQuestionList(_ random: Bool = false) {
+    func createQuestionList(randomTable: Bool, randomizeAll: Bool) {
         questions.removeAll()
         for n in 1...numQuestions {
-            let base = random ? Int.random(in: 1...12) : base
-            let n = random ? Int.random(in: 1...12) : n
+            let base = randomTable ? Int.random(in: 1...12) : base
+            let n = randomizeAll ? Int.random(in: 1...12) : n
             let question = Question(problem: "\(base) x \(n) =", answer: base * n)
             questions.append(question)
         }
         
-        if random {
+        if randomizeAll {
             questions.shuffle()
         }
     }
     
     func startGame() {
         gameInProgress = true
-        createQuestionList(random)
+        createQuestionList(randomTable: randomTable, randomizeAll: randomizeAll)
     }
 }
 
