@@ -28,9 +28,4 @@ class Expenses: ObservableObject {
         
         items = []
     }
-
-    func itemsByType(_ type: String) -> [ExpenseItem] {
-        self.items.filter { $0.type == type}
-    }
 }
-

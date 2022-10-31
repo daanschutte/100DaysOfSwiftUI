@@ -15,27 +15,28 @@ struct ExpenseItemListView: View {
     
     var body: some View {
         List {
-            ForEach(expenses.itemsByType(expenseType)) { item in
-                HStack {
-                    VStack(alignment: .leading) {
-                        Text(item.name)
-                            .font(.headline)
-                        Text(item.type)
+            ForEach(expenses.items) { item in
+                if item.type == expenseType {
+                    HStack {
+                        VStack(alignment: .leading) {
+                            Text(item.name)
+                                .font(.headline)
+                            Text(item.type)
+                        }
+                        
+                        Spacer()
+                        
+                        Text(item.amount, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
+                            .foregroundColor(getForegroundColor(item.amount))
                     }
-                    
-                    Spacer()
-                    
-                    Text(item.amount, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
-                        .foregroundColor(getForegroundColor(item.amount))
                 }
             }
             .onDelete(perform: removeItems)
         }
     }
-    
-    
+        
     func removeItems(at offsets: IndexSet) {
-        //        expenses.remove(atOffsets: offsets)
+        expenses.items.remove(atOffsets: offsets)
     }
     
     
@@ -58,12 +59,20 @@ struct ContentView: View {
     
     @State private var showingAddExpense = false
     
+    @State private var types = ["Personal", "Business"]
+    @State private var type = "Personal"
+    
     var body: some View {
         NavigationStack {
             VStack {
-                // TODO: toggle with a picker
-                ExpenseItemListView(expenses: expenses, expenseType: "Personal")
-                ExpenseItemListView(expenses: expenses, expenseType: "Business")
+                Picker("Type", selection: $type) {
+                    ForEach(types, id: \.self) {
+                        Text($0)
+                    }
+                }
+                .pickerStyle(.segmented)
+                
+                ExpenseItemListView(expenses: expenses, expenseType: type)
             }
             .navigationTitle("iExpense")
             .toolbar {
@@ -77,8 +86,6 @@ struct ContentView: View {
                 AddView(expenses: expenses)
             }
         }
-        
-        
     }
     
     struct ContentView_Previews: PreviewProvider {
