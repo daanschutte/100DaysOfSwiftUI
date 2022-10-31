@@ -7,47 +7,37 @@
 
 import SwiftUI
 
-struct ContentView: View {
-    @StateObject var expenses = Expenses()
+struct ExpenseItemListView: View {
     
-    @State private var showingAddExpense = false
+    @ObservedObject var expenses: Expenses
+    
+    let expenseType: String
     
     var body: some View {
-        NavigationStack {
-            List {
-                ForEach(expenses.items) { item in
-                    HStack {
-                        VStack(alignment: .leading) {
-                            Text(item.name)
-                                .font(.headline)
-                            Text(item.type)
-                        }
-                        
-                        Spacer()
-                        
-                        Text(item.amount, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
-                            .foregroundColor(getForegroundColor(item.amount))
+        List {
+            ForEach(expenses.itemsByType(expenseType)) { item in
+                HStack {
+                    VStack(alignment: .leading) {
+                        Text(item.name)
+                            .font(.headline)
+                        Text(item.type)
                     }
-                }
-                .onDelete(perform: removeItems)
-            }
-            .navigationTitle("iExpense")
-            .toolbar {
-                Button {
-                    showingAddExpense = true
-                } label: {
-                    Image(systemName: "plus")
+                    
+                    Spacer()
+                    
+                    Text(item.amount, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
+                        .foregroundColor(getForegroundColor(item.amount))
                 }
             }
-            .sheet(isPresented: $showingAddExpense) {
-                AddView(expenses: expenses)
-            }
+            .onDelete(perform: removeItems)
         }
     }
     
+    
     func removeItems(at offsets: IndexSet) {
-        expenses.items.remove(atOffsets: offsets)
+        //        expenses.remove(atOffsets: offsets)
     }
+    
     
     func getForegroundColor(_ amount: Double) -> Color {
         switch amount {
@@ -63,8 +53,37 @@ struct ContentView: View {
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
+struct ContentView: View {
+    @StateObject var expenses = Expenses()
+    
+    @State private var showingAddExpense = false
+    
+    var body: some View {
+        NavigationStack {
+            VStack {
+                // TODO: toggle with a picker
+                ExpenseItemListView(expenses: expenses, expenseType: "Personal")
+                ExpenseItemListView(expenses: expenses, expenseType: "Business")
+            }
+            .navigationTitle("iExpense")
+            .toolbar {
+                Button {
+                    showingAddExpense = true
+                } label: {
+                    Image(systemName: "plus")
+                }
+            }
+            .sheet(isPresented: $showingAddExpense) {
+                AddView(expenses: expenses)
+            }
+        }
+        
+        
+    }
+    
+    struct ContentView_Previews: PreviewProvider {
+        static var previews: some View {
+            ContentView()
+        }
     }
 }
