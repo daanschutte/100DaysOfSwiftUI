@@ -17,12 +17,11 @@ struct ContentView: View {
     
     var body: some View {
         NavigationStack {
-            NavigationStack {
                 ScrollView {
                     LazyVGrid(columns: columns) {
                         ForEach(missions) { mission in
                             NavigationLink {
-                                MissionView(mission: mission, astronauts: astronauts)
+                                MissionView(mission: mission)
                             } label: {
                                 VStack {
                                     Image(mission.image)
@@ -58,7 +57,6 @@ struct ContentView: View {
                 .background(.darkBackGround)
                 .preferredColorScheme(.dark)
             }
-        }
     }
 }
 

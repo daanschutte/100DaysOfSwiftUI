@@ -16,7 +16,7 @@ struct HorizontalDivider: View {
     }
 }
 
-struct SpacerView_Previews: PreviewProvider {
+struct HorizontalDivider_Previews: PreviewProvider {
     static var previews: some View {
         HorizontalDivider()
     }

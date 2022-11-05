@@ -7,40 +7,75 @@
 
 import SwiftUI
 
+
 struct CrewView: View {
-    let astronaut: Astronaut
-    let role: String
+    struct CrewMember {
+        let role: String
+        let astronaut: Astronaut
+    }
+    
+    let crew: [CrewMember]
     
     var body: some View {
-        VStack {
-            HStack {
-                Image(astronaut.id)
-                    .resizable()
-                    .frame(width: 104, height: 72)
-                    .clipShape(Capsule())
-                    .overlay(
-                        Capsule()
-                            .strokeBorder(.white, lineWidth: 1)
-                    )
-                
-                VStack(alignment: .leading) {
-                    Text(astronaut.name)
-                        .foregroundColor(.white)
-                        .font(.headline)
-                    
-                    Text(role)
-                        .foregroundColor(.secondary)
+        NavigationStack {
+            Text("Crew")
+                .font(.title.bold())
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal)
+            
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack {
+                    ForEach(crew, id: \.role) { crewMember in
+                        NavigationLink {
+                            AstronautView(astronaut: crewMember.astronaut)
+                        } label: {
+                            VStack {
+                                HStack {
+                                    Image(crewMember.astronaut.id)
+                                        .resizable()
+                                        .frame(width: 104, height: 72)
+                                        .clipShape(Capsule())
+                                        .overlay(
+                                            Capsule()
+                                                .strokeBorder(.white, lineWidth: 1)
+                                        )
+                                    
+                                    VStack(alignment: .leading) {
+                                        Text(crewMember.astronaut.name)
+                                            .foregroundColor(.white)
+                                            .font(.headline)
+                                        
+                                        Text(crewMember.role)
+                                            .foregroundColor(.secondary)
+                                    }
+                                }
+                            }
+                            .padding()
+                        }
+                    }
                 }
+            }
+        }
+    }
+    
+    init(mission: Mission) {
+        let astronauts: [String: Astronaut] = Bundle.main.decode("astronauts.json")
+        
+        self.crew = mission.crew.map { member in
+            if let astronaut = astronauts[member.name] {
+                return CrewMember(role: member.role, astronaut: astronaut)
+            } else {
+                fatalError("Missing \(member.name)")
             }
         }
     }
 }
 
 struct CrewView_Previews: PreviewProvider {
-    static let astronauts: [String: Astronaut] = Bundle.main.decode("astronauts.json")
+    static let missions: [Mission] = Bundle.main.decode("missions.json")
     
     static var previews: some View {
-        CrewView(astronaut: astronauts["armstrong"]!, role: "Commander")
+        CrewView(mission: missions[0])
             .preferredColorScheme(.dark)
     }
 }
