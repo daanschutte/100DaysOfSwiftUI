@@ -50,7 +50,7 @@ struct CrewView: View {
                                     }
                                 }
                             }
-                            .padding()
+                            .padding(.horizontal)
                         }
                     }
                 }

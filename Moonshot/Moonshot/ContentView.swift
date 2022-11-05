@@ -75,14 +75,13 @@ struct ListLayout: View {
                             .foregroundColor(.white.opacity(0.5))
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.vertical, 10)
+                    .padding(.vertical)
                     
                     Image(mission.image)
                         .resizable()
                         .scaledToFit()
-                        .frame(width: 50, height: 50)
+                        .frame(height: 55)
                         .padding(.horizontal)
-                    
                 }
             }
             .listStyle(.plain)
@@ -93,7 +92,7 @@ struct ListLayout: View {
 }
 
 struct ContentView: View {
-    @State private var showingListLayout = true
+    @State private var showingListLayout = false
     
     let missions: [Mission] = Bundle.main.decode("missions.json")
     
