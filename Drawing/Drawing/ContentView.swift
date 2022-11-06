@@ -58,6 +58,7 @@ struct ContentView: View {
 
         Arc(startAngle: .degrees(-90), endAngle: .degrees(90), clockwise: true)
             .strokeBorder(.blue, lineWidth: 40)
+            .frame(height: 100)
         
     }
 }
