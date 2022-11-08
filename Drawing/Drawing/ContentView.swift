@@ -29,37 +29,66 @@ import SwiftUI
 //}
 
 
-struct Checkerboard: Shape {
-    var rows: Int
-    var columns: Int
+//struct Checkerboard: Shape {
+//    var rows: Int
+//    var columns: Int
+//
+//    var animatableData: AnimatablePair<Double, Double> {
+//        get {
+//            AnimatableData(Double(rows), Double(columns))
+//        }
+//        set {
+//            rows = Int(newValue.first)
+//            columns = Int(newValue.second)
+//        }
+//    }
+//
+//    func path(in rect: CGRect) -> Path {
+//        var path = Path()
+//
+//        let rowSize = rect.height / Double(rows)
+//        let columnSize = rect.width / Double(columns)
+//
+//        for row in 0..<rows {
+//            for column in 0..<columns {
+//                if (row + column).isMultiple(of: 2) {
+//                    let startX = columnSize * Double(column)
+//                    let startY = rowSize * Double(row)
+//
+//                    let rect = CGRect(x: startX, y: startY, width: columnSize, height: rowSize)
+//                    path.addRect(rect)
+//                }
+//            }
+//        }
+//        return path
+//    }
+//}
+
+
+struct Arrow: Shape {
     
-    var animatableData: AnimatablePair<Double, Double> {
-        get {
-            AnimatableData(Double(rows), Double(columns))
-        }
-        set {
-            rows = Int(newValue.first)
-            columns = Int(newValue.second)
-        }
-    }
+    var size: Double
     
     func path(in rect: CGRect) -> Path {
         var path = Path()
         
-        let rowSize = rect.height / Double(rows)
-        let columnSize = rect.width / Double(columns)
+        // arrowhead
+        let originX = rect.width / 2
+        let originY = rect.height / 2
         
-        for row in 0..<rows {
-            for column in 0..<columns {
-                if (row + column).isMultiple(of: 2) {
-                    let startX = columnSize * Double(column)
-                    let startY = rowSize * Double(row)
-                    
-                    let rect = CGRect(x: startX, y: startY, width: columnSize, height: rowSize)
-                    path.addRect(rect)
-                }
-            }
-        }
+        path.move(to: CGPoint(x: originX - size , y: originY))
+        path.addLine(to: CGPoint(x: originX, y: originY - 2 * size))
+        path.addLine(to: CGPoint(x: originX + size, y: originY))
+        path.addLine(to: CGPoint(x: originX - size , y: originY))
+        
+        // shaft
+        let shaftOriginX = originX - size / 2
+
+        path.move(to: CGPoint(x: shaftOriginX, y: originY))
+        path.addLine(to: CGPoint(x: shaftOriginX, y: originY + size * 2))
+        path.addLine(to: CGPoint(x: shaftOriginX + size, y: originY + size * 2))
+        path.addLine(to: CGPoint(x: shaftOriginX + size, y: originY))
+        
         return path
     }
 }
@@ -73,22 +102,35 @@ struct ContentView: View {
     //            .onTapGesture {
     //                withAnimation {
     //                    insetAmount = Double.random(in: 10...90)
-    //                }
+    //                } 
     //            }
     //    }
     
     
-    @State private var rows = 4
-    @State private var columns = 4
+//    @State private var rows = 4
+//    @State private var columns = 4
+//
+//    var body: some View {
+//        Checkerboard(rows: rows, columns: columns)
+//            .onTapGesture {
+//                withAnimation(.linear(duration: 3)) {
+//                    rows = 8
+//                    columns = 16
+//                }
+//            }
+//    }
+    
+    @State private var size = 50.0
     
     var body: some View {
-        Checkerboard(rows: rows, columns: columns)
-            .onTapGesture {
-                withAnimation(.linear(duration: 3)) {
-                    rows = 8
-                    columns = 16
-                }
-            }
+        VStack{
+            Arrow(size: size)
+                .stroke(.blue, lineWidth: 3)
+            
+            Slider(value: $size, in: 0...100)
+                .padding()
+        }
+        
     }
 }
 
