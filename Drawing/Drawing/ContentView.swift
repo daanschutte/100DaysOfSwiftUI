@@ -121,16 +121,26 @@ struct ContentView: View {
 //    }
     
     @State private var size = 50.0
+    @State private var lineWidth = 1.0
     
     var body: some View {
         VStack{
             Arrow(size: size)
-                .stroke(.blue, lineWidth: 3)
+                .stroke(.blue, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round, lineJoin: .round))
+                .onTapGesture {
+                    withAnimation(.linear(duration: 2)) {
+                        if lineWidth == 1 {
+                            lineWidth = 15
+                        } else {
+                            lineWidth = 1
+                        }
+                    }
+                }
             
-            Slider(value: $size, in: 0...100)
+            Text("Size: \(size, format: .number.precision(.significantDigits(2)))")
+            Slider(value: $size, in: 1...100)
                 .padding()
         }
-        
     }
 }
 
