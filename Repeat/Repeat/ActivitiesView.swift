@@ -12,8 +12,8 @@ struct ActivitiesView: View {
     
     @ObservedObject var activities: Activities
     
-    @State private var description: String
-    @State private var completed: Date
+    @State private var description = ""
+    @State private var completed = Date()
 
     var body: some View {
         NavigationStack {
@@ -21,12 +21,12 @@ struct ActivitiesView: View {
                 Form {
                     TextField("Description", text: $description)
                     
+                    DatePicker("Date", selection: $completed)
+                    
                     Button("Add") {
-                        // TODO: REMOVE BELOW 2 LINES
-                        let testActivity = ActivityItem(name: "test activity", completed: Date())
-                        activities.items.append(testActivity)
+                        let activity = ActivityItem(name: description, completed: completed)
+                        activities.items.append(activity)
                         
-                        // TODO
                         dismiss()
                     }
                 }

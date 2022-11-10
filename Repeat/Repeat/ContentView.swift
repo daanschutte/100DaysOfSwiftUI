@@ -19,9 +19,15 @@ struct ContentView: View {
                 Form {
                     ForEach(activities.items) { activity in
                         // TODO: make this an navigation link
-                        Text(activity.name)
+                        VStack(alignment: .leading) {
+                            Text(activity.name)
+                                .font(.headline)
+                            Text(activity.completed.formatted())
+                                .font(.footnote)
+                        }
                     }
                     .onDelete(perform: removeItems)
+                    .padding(5)
                 }
             }
             .navigationTitle("OnRepeat")
