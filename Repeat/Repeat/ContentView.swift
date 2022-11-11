@@ -7,6 +7,29 @@
 
 import SwiftUI
 
+
+struct ActivityLabelLayout: View {
+    @State var activity: ActivityItem
+    
+    var body: some View {
+        HStack {
+            VStack(alignment: .center) {
+                Text(activity.type)
+                    .font(.headline)
+                Text(activity.formattedCompleted)
+                    .font(.caption)
+            }
+            .multilineTextAlignment(.center)
+            .padding(.horizontal)
+            
+            Text(activity.notes)
+                .font(.caption)
+                .multilineTextAlignment(.leading)
+        }
+    }
+}
+
+
 struct ContentView: View {
     @StateObject var activities = Activities()
     
@@ -18,29 +41,13 @@ struct ContentView: View {
                 Form {
                     ForEach(activities.items) { activity in
                         NavigationLink {
-                            VStack {
-                                // TODO
-                                Text("edit single activity view")
-                            }
+                            // TODO: Replace with edit view
+                            Text("edit single activity view")
                         } label: {
-                            HStack {
-                                VStack(alignment: .leading) {
-                                    Text(activity.type)
-                                        .font(.headline)
-                                    Text(activity.formattedCompleted)
-                                        .font(.caption)
-                                }
-                                .multilineTextAlignment(.center)
-                                .padding(.horizontal)
-                                
-                                Text(activity.notes)
-                                    .font(.caption)
-                                    .multilineTextAlignment(.leading)
-                            }
+                            ActivityLabelLayout(activity: activity)
                         }
                     }
                     .onDelete(perform: removeItems)
-                    .padding(5)
                 }
             }
             .navigationTitle("Again.")
