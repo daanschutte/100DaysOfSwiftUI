@@ -8,11 +8,9 @@
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject var activities = Bundle.main.decode("history.json") // TODO: fix
+    @StateObject var activities = Activities()
     
     @State private var showingSheet = false
-    
-    // TODO: NEXT: Persist activities
     
     var body: some View {
         NavigationStack {
@@ -53,10 +51,16 @@ struct ContentView: View {
                 }
             }
         }
+        .onAppear(perform: loadHistory)
     }
     
     func removeItems(at offsets: IndexSet) {
         activities.items.remove(atOffsets: offsets)
+    }
+    
+    func loadHistory() {
+        let activityItems: [ActivityItem] = Bundle.main.decode("history.json")
+        activities.items = activityItems
     }
 }
 

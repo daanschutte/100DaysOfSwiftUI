@@ -17,6 +17,9 @@ struct ActivitiesView: View {
     @State private var completed = Date()
     @State private var notes = ""
     
+    // Usually this would be an UUID but here we don't want to deal with encoding JSON
+    @State private var currentId = 3
+
     let activityTypes = ["Music", "Reading", "Exercise"]
     
     // TODO: allow adding new activity
@@ -36,9 +39,18 @@ struct ActivitiesView: View {
                     TextField("Notes", text: $notes)
                     
                     Button("Add") {
-                        let activity = ActivityItem(type: type, completed: completed, notes: notes)
+                        let activity = ActivityItem(id: currentId, type: type, completed: completed, notes: notes)
+                        currentId += 1 // see note at property declaration
+                        
                         activities.items.append(activity)
                         
+                        dismiss()
+                    }
+                }
+            }
+            .toolbar {
+                ToolbarItem {
+                    Button("Cancel") {
                         dismiss()
                     }
                 }

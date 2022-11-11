@@ -8,7 +8,7 @@
 import Foundation
 
 extension Bundle {
-    func decode(_ file: String) -> Activities {
+    func decode(_ file: String) -> [ActivityItem] {
         guard let url = self.url(forResource: file, withExtension: nil) else {
             fatalError("Failed to locate \(file) in Bundle.")
         }
@@ -17,10 +17,13 @@ extension Bundle {
             fatalError("Failed to open \(file) from Bundle.")
         }
         
+        let formatter = DateFormatter()
+        formatter.dateFormat = "y-MM-dd'T'HH:mm"
+
         let decoder = JSONDecoder()
-        // TODO: decoding strategy?
+        decoder.dateDecodingStrategy = .formatted(formatter)
         
-        guard let loaded = try? decoder.decode(Activities.self, from: data) else {
+        guard let loaded = try? decoder.decode([ActivityItem].self, from: data) else {
             fatalError("Failed to decode \(file) from Bundle.")
         }
         
