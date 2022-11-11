@@ -17,12 +17,8 @@ struct ActivitiesView: View {
     @State private var completed = Date()
     @State private var notes = ""
     
-    // Usually this would be an UUID but here we don't want to deal with encoding JSON
-    @State private var currentId = 3
-
+    // TODO: enum?
     let activityTypes = ["Music", "Reading", "Exercise"]
-    
-    // TODO: allow adding new activity
     
     var body: some View {
         NavigationStack {
@@ -39,8 +35,7 @@ struct ActivitiesView: View {
                     TextField("Notes", text: $notes)
                     
                     Button("Add") {
-                        let activity = ActivityItem(id: currentId, type: type, completed: completed, notes: notes)
-                        currentId += 1 // see note at property declaration
+                        let activity = ActivityItem(type: type, completed: completed, notes: notes)
                         
                         activities.items.append(activity)
                         

@@ -17,19 +17,26 @@ struct ContentView: View {
             VStack {
                 Form {
                     ForEach(activities.items) { activity in
-                        HStack {
-                            // TODO: make this an navigation link
-                            VStack(alignment: .leading) {
-                                Text(activity.type)
-                                    .font(.headline)
-                                Text(activity.completed.formatted())
-                                    .font(.footnote)
+                        NavigationLink {
+                            VStack {
+                                // TODO
+                                Text("edit single activity view")
                             }
-                            .padding(.horizontal)
-                            
-                            Text(activity.notes)
-                                .font(.caption)
-                                .multilineTextAlignment(.leading)
+                        } label: {
+                            HStack {
+                                VStack(alignment: .leading) {
+                                    Text(activity.type)
+                                        .font(.headline)
+                                    Text(activity.formattedCompleted)
+                                        .font(.caption)
+                                }
+                                .multilineTextAlignment(.center)
+                                .padding(.horizontal)
+                                
+                                Text(activity.notes)
+                                    .font(.caption)
+                                    .multilineTextAlignment(.leading)
+                            }
                         }
                     }
                     .onDelete(perform: removeItems)
@@ -54,13 +61,13 @@ struct ContentView: View {
         .onAppear(perform: loadHistory)
     }
     
-    func removeItems(at offsets: IndexSet) {
-        activities.items.remove(atOffsets: offsets)
-    }
-    
     func loadHistory() {
         let activityItems: [ActivityItem] = Bundle.main.decode("history.json")
         activities.items = activityItems
+    }
+    
+    func removeItems(at offsets: IndexSet) {
+        activities.items.remove(atOffsets: offsets)
     }
 }
 

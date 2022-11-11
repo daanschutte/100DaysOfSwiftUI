@@ -1,18 +1,18 @@
 [
     {
-        "id": 0,
+        "id": "D37C5E83-5DB5-435F-B177-10651A082377",
         "type": "Reading",
         "completed": "2022-10-23T14:35",
         "notes": "Kaladin is the best character in the book even though he is so emo!"
     },
     {
-        "id": 1,
+        "id": "B2BC37C6-5D04-4DF2-AF8C-5002F3C44913",
         "type": "Music",
         "completed": "2022-10-22T12:35",
         "notes": "Guitar scales"
     },
     {
-        "id": 2,
+        "id": "65666146-CF1E-4CFA-9685-E37BF454FC5E",
         "type": "Reading",
         "completed": "2022-10-30T22:05",
         "notes": "Shallan is also pretty cool"
