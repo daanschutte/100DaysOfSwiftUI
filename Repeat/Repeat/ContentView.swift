@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-
 struct ContentView: View {
     @StateObject var activities = Activities()
     
@@ -20,8 +19,8 @@ struct ContentView: View {
             VStack {
                 Form {
                     ForEach(activities.items) { activity in
-                        // TODO: make this an navigation link
                         HStack {
+                            // TODO: make this an navigation link
                             VStack(alignment: .leading) {
                                 Text(activity.type)
                                     .font(.headline)
@@ -39,7 +38,7 @@ struct ContentView: View {
                     .padding(5)
                 }
             }
-            .navigationTitle("OnRepeat")
+            .navigationTitle("Again.")
             .toolbar {
                 ToolbarItem {
                     Button {

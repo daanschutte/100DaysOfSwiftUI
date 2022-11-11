@@ -12,7 +12,7 @@ struct ActivitiesView: View {
     
     @ObservedObject var activities: Activities
     
-    @State private var type = "Music" // TODO UserDefaults what was last property set?
+    @State private var type = UserDefaults.standard.string(forKey: "PreviousActivityType") ?? "Unknown"
     @State private var completed = Date()
     @State private var notes = ""
     
@@ -29,15 +29,16 @@ struct ActivitiesView: View {
                             Text($0)
                         }
                     }
-                                        
-                    DatePicker("Date", selection: $completed)
+                    .pickerStyle(.automatic)
                     
+                    DatePicker("Date", selection: $completed)
                     TextField("Notes", text: $notes)
                     
                     Button("Add") {
                         let activity = ActivityItem(type: type, completed: completed, notes: notes)
                         activities.items.append(activity)
                         
+                        UserDefaults.standard.set(self.type, forKey: "PreviousActivityType")
                         dismiss()
                     }
                 }
