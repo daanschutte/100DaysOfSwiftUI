@@ -12,19 +12,30 @@ struct ActivitiesView: View {
     
     @ObservedObject var activities: Activities
     
-    @State private var description = ""
+    @State private var type = "Music" // TODO UserDefaults what was last property set?
     @State private var completed = Date()
-
+    @State private var notes = ""
+    
+    let activityTypes = ["Music", "Reading", "Exercise"]
+    
+    // TODO: allow adding new activity
+    
     var body: some View {
         NavigationStack {
             VStack {
                 Form {
-                    TextField("Description", text: $description)
-                    
+                    Picker("Activity Type", selection: $type) {
+                        ForEach(activityTypes, id: \.self) {
+                            Text($0)
+                        }
+                    }
+                                        
                     DatePicker("Date", selection: $completed)
                     
+                    TextField("Notes", text: $notes)
+                    
                     Button("Add") {
-                        let activity = ActivityItem(name: description, completed: completed)
+                        let activity = ActivityItem(type: type, completed: completed, notes: notes)
                         activities.items.append(activity)
                         
                         dismiss()

@@ -13,17 +13,26 @@ struct ContentView: View {
     
     @State private var showingSheet = false
     
+    // TODO: NEXT: Persist activities
+    
     var body: some View {
         NavigationStack {
             VStack {
                 Form {
                     ForEach(activities.items) { activity in
                         // TODO: make this an navigation link
-                        VStack(alignment: .leading) {
-                            Text(activity.name)
-                                .font(.headline)
-                            Text(activity.completed.formatted())
-                                .font(.footnote)
+                        HStack {
+                            VStack(alignment: .leading) {
+                                Text(activity.type)
+                                    .font(.headline)
+                                Text(activity.completed.formatted())
+                                    .font(.footnote)
+                            }
+                            .padding(.horizontal)
+                            
+                            Text(activity.notes)
+                                .font(.caption)
+                                .multilineTextAlignment(.leading)
                         }
                     }
                     .onDelete(perform: removeItems)
