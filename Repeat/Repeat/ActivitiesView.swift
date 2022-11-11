@@ -12,7 +12,8 @@ struct ActivitiesView: View {
     
     @ObservedObject var activities: Activities
     
-    @State private var type = UserDefaults.standard.string(forKey: "PreviousActivityType") ?? "Unknown"
+    @AppStorage("PreviousActivityType") private var type = "Unknown"
+    
     @State private var completed = Date()
     @State private var notes = ""
     
@@ -38,7 +39,6 @@ struct ActivitiesView: View {
                         let activity = ActivityItem(type: type, completed: completed, notes: notes)
                         activities.items.append(activity)
                         
-                        UserDefaults.standard.set(self.type, forKey: "PreviousActivityType")
                         dismiss()
                     }
                 }
