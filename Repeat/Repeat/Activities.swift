@@ -7,6 +7,6 @@
 
 import Foundation
 
-class Activities: ObservableObject {
+class Activities: ObservableObject, Codable {
     @Published var items = [ActivityItem]()
 }

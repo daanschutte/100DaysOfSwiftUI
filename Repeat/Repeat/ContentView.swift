@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject var activities = Activities()
+    @StateObject var activities = Bundle.main.decode("history.json") // TODO: fix
     
     @State private var showingSheet = false
     

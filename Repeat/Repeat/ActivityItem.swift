@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct ActivityItem: Identifiable {
+struct ActivityItem: Identifiable, Codable {
     let id = UUID()
     let type: String
     let completed: Date
