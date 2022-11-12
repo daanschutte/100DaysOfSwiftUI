@@ -50,13 +50,13 @@ struct ContentView: View {
         NavigationStack {
             VStack {
                 Form {
-                    ForEach(activities.activityTypes(), id: \.self) { type in
-                        if let last = activities.lastCompleted(type: type) {
+                    ForEach(activityTypes(), id: \.self) { type in
+                        if let last = lastCompleted(type: type) {
                             NavigationLink {
                                 // TODO: Replace with edit view
                                 Text("all items from single activity view")
                             } label: {
-                                ActivityLabelLayout(activity: last, totalCompleted: activities.completedCount(by: last.type))
+                                ActivityLabelLayout(activity: last, totalCompleted: completedCount(by: last.type))
                             }
                         }
                     }
@@ -86,6 +86,22 @@ struct ContentView: View {
         for item in activityItems {
             activities.items[item.type, default: []].append(item)
         }
+    }
+    
+    func completedCount(by type: String) -> Int {
+        return activities.items[type]?.count ?? 0
+    }
+    
+    func lastCompleted(type: String) -> ActivityItem? {
+        return activities.items[type]?
+            .sorted {
+                return $0.completed < $1.completed
+            }
+            .last
+    }
+    
+    func activityTypes() -> [String] {
+        return activities.items.keys.sorted()
     }
 }
 

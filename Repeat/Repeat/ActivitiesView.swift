@@ -13,28 +13,17 @@ struct ActivitiesView: View {
     @ObservedObject var activities: Activities
     
     @AppStorage("PreviousActivityType") private var type = "Unknown"
-    
-    @State private var completed = Date()
-    @State private var notes = ""
+
+    @State private var newName = ""
     
     var body: some View {
         NavigationStack {
             VStack {
                 Form {
-                    Picker("Activity Type", selection: $type) {
-                        ForEach(activities.activityTypes(), id: \.self) {
-                            Text($0)
-                        }
-                    }
-                    .pickerStyle(.automatic)
-                    
-                    DatePicker("Date", selection: $completed)
-                    TextField("Notes", text: $notes)
+                    TextField("Activity name", text: $newName)
                     
                     Button("Add") {
-                        let activity = ActivityItem(type: type, completed: completed, notes: notes)
-                        
-                        activities.items[type, default: []].append(activity)
+                        activities.items[newName, default: []].append(contentsOf: [])
                         
                         dismiss()
                     }
@@ -47,7 +36,7 @@ struct ActivitiesView: View {
                     }
                 }
             }
-            .navigationTitle("Activities")
+            .navigationTitle("Add new activity")
         }
     }
 }
