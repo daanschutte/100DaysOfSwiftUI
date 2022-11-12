@@ -10,21 +10,32 @@ import SwiftUI
 
 struct ActivityLabelLayout: View {
     @State var activity: ActivityItem
+    @State var totalCompleted: Int
     
     var body: some View {
         HStack {
             VStack(alignment: .center) {
                 Text(activity.type)
                     .font(.headline)
+                
                 Text(activity.formattedCompleted)
                     .font(.caption)
             }
             .multilineTextAlignment(.center)
             .padding(.horizontal)
-            
-            Text(activity.notes)
-                .font(.caption)
-                .multilineTextAlignment(.leading)
+
+            Spacer()
+
+            VStack(alignment: .center) {
+                Text("\(totalCompleted)")
+                    .font(.headline)
+                    .foregroundColor(.blue)
+                
+                Text("Total")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+            .padding(.trailing)
         }
     }
 }
@@ -39,15 +50,16 @@ struct ContentView: View {
         NavigationStack {
             VStack {
                 Form {
-                    ForEach(activities.items) { activity in
-                        NavigationLink {
-                            // TODO: Replace with edit view
-                            Text("edit single activity view")
-                        } label: {
-                            ActivityLabelLayout(activity: activity)
+                    ForEach(activities.activityTypes(), id: \.self) { type in
+                        if let last = activities.lastCompleted(type: type) {
+                            NavigationLink {
+                                // TODO: Replace with edit view
+                                Text("all items from single activity view")
+                            } label: {
+                                ActivityLabelLayout(activity: last, totalCompleted: activities.completedCount(by: last.type))
+                            }
                         }
                     }
-                    .onDelete(perform: removeItems)
                 }
             }
             .navigationTitle("Again.")
@@ -70,11 +82,10 @@ struct ContentView: View {
     
     func loadHistory() {
         let activityItems: [ActivityItem] = Bundle.main.decode("history.json")
-        activities.items = activityItems
-    }
-    
-    func removeItems(at offsets: IndexSet) {
-        activities.items.remove(atOffsets: offsets)
+        
+        for item in activityItems {
+            activities.items[item.type, default: []].append(item)
+        }
     }
 }
 

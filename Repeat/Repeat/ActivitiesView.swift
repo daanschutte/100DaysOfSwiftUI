@@ -17,15 +17,12 @@ struct ActivitiesView: View {
     @State private var completed = Date()
     @State private var notes = ""
     
-    // TODO: enum?
-    let activityTypes = ["Music", "Reading", "Exercise"]
-    
     var body: some View {
         NavigationStack {
             VStack {
                 Form {
                     Picker("Activity Type", selection: $type) {
-                        ForEach(activityTypes, id: \.self) {
+                        ForEach(activities.activityTypes(), id: \.self) {
                             Text($0)
                         }
                     }
@@ -37,7 +34,7 @@ struct ActivitiesView: View {
                     Button("Add") {
                         let activity = ActivityItem(type: type, completed: completed, notes: notes)
                         
-                        activities.items.append(activity)
+                        activities.items[type, default: []].append(activity)
                         
                         dismiss()
                     }

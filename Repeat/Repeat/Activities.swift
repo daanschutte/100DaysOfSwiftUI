@@ -8,18 +8,21 @@
 import Foundation
 
 class Activities: ObservableObject {
-    @Published var items = [ActivityItem]()
+    @Published var items: [String: [ActivityItem]] = [:]
     
     func completedCount(by type: String) -> Int {
-        items.filter { $0.type == type }.count
+        return items[type]?.count ?? 0
     }
     
     func lastCompleted(type: String) -> ActivityItem? {
-        return items
-            .filter { $0.type == type }
+        return items[type]?
             .sorted {
                 return $0.completed < $1.completed
             }
             .last
+    }
+    
+    func activityTypes() -> [String] {
+        return items.keys.sorted()
     }
 }
