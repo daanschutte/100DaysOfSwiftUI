@@ -25,7 +25,7 @@ struct AddressView: View {
                 } label: {
                     Text("Check out")
                 }
-                .disabled(order.hasInvalidAddress)
+                .disabled(!order.hasValidAddress)
             }
         }
         .navigationTitle("Delivery Details")
