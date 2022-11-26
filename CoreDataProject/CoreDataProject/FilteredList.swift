@@ -19,6 +19,8 @@ struct FilteredList<T: NSManagedObject, Content: View>: View {
     
     @FetchRequest var fetchRequest: FetchedResults<T>
     
+    private var sortDescriptors = [NSSortDescriptor]()
+    
     let content: (T) -> Content
     
     var body: some View {
@@ -29,7 +31,7 @@ struct FilteredList<T: NSManagedObject, Content: View>: View {
     
     init(predicate: FilteredListPredicates, filterKey: String, filterValue: String, @ViewBuilder content: @escaping (T) -> Content) {
         _fetchRequest = FetchRequest<T>(
-            sortDescriptors: [],
+            sortDescriptors: sortDescriptors,
             predicate: NSPredicate(format: "%K \(predicate.rawValue) %@", filterKey, filterValue)
         )
         
