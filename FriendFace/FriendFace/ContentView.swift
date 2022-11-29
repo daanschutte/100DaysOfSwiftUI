@@ -7,44 +7,47 @@
 
 import SwiftUI
 
-struct Response: Decodable {
-   @StateObject var results: [User]
-    
-    init() {
-        self.results = [User]()
-    }
-}
-
 struct ContentView: View {
-    @State private var results = [User]()
-    
+    @State private var users = [User]()
+
     var body: some View {
-        VStack(alignment: .leading) {
-            List(results, id: \.data.id) { user in
-                Text(user.data.name)
+        NavigationStack {
+            VStack(alignment: .leading) {
+                List(users) { user in
+                    Text(user.name)
+                }
+            }
+            .navigationTitle("FriendFace")
+            .task {
+                if users.count <= 0 {
+                    print("Fetching users")
+                    await loadData()
+                } else {
+                    print("Using existing users")
+                }
             }
         }
-        .task {
-            await loadData()
-        }
     }
-    
+
     func loadData() async {
-        guard let url = URL(string: "https://www.hackingwithswift.com/samples/friendface.json") else {
+        guard let url = URL(string: "https://www.hackingwithswift.com/samples/friendface.json")
+        else {
             print("Invalid URL")
             return
         }
-        
+
         do {
             let (data, _) = try await URLSession.shared.data(from: url)
-            
-            if let decodedResponse = try? JSONDecoder().decode(Response.self, from: data) {
-                results = decodedResponse.results
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .iso8601
+            if let decodedResponse = try? decoder.decode([User].self, from: data) {
+                users = decodedResponse
+            } else {
+                print("Could not decode user data")
             }
         } catch {
             print("Invalid data")
         }
-        
     }
 }
 
