@@ -10,36 +10,12 @@ import Foundation
 class User: ObservableObject {
     @Published var data: UserData
 
-    required init(
-        id: UUID,
-        isActive: Bool,
-        age: Int,
-        name: String,
-        company: String,
-        email: String,
-        address: String,
-        about: String,
-        registered: Date,
-        tags: [String],
-        friends: [UUID]
-    ) {
-        self.data = UserData(
-            id: id,
-            isActive: isActive,
-            age: age,
-            name: name,
-            company: company,
-            email: email,
-            address: address,
-            about: about,
-            registered: registered,
-            tags: tags,
-            friends: friends
-        )
-    }
+     init() {
+         self.data = UserData(id: UUID(), isActive: true, age: 0, name: "", company: "", email: "", address: "", about: "", registered: Date(), tags: [String](), friends: [FriendData]())
+     }
 }
 
-struct UserData: Codable {
+struct UserData: Decodable {
     enum CodingKeys: CodingKey {
         case id, isActive, age, name, company, email, address, about, registered, tags, friends
     }
@@ -54,5 +30,5 @@ struct UserData: Codable {
     var about: String
     var registered: Date
     var tags: [String]
-    var friends: [UUID]
+    var friends: [FriendData]
 }
