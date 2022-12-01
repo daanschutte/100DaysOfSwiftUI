@@ -19,4 +19,16 @@ struct User: Codable, Identifiable {
     let registered: Date
     let tags: [String]
     let friends: [Friend]
+    
+    var formattedDate: String {
+        registered.formatted(date: .abbreviated, time: .omitted)
+    }
+    
+    var initials: String {
+        return name
+            .split(separator: " ")
+            .map { $0.first?.description ?? "X" }
+            .map { $0.uppercased() }
+            .joined(separator: "")
+    }
 }
