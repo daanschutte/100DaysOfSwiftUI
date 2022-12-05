@@ -61,3 +61,5 @@ xcuserdata/
 *.plist
 *.pbxproj
 
+### Swift Format
+.swift-format
