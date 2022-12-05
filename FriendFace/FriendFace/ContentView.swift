@@ -14,7 +14,11 @@ struct ContentView: View {
         NavigationStack {
             VStack(alignment: .leading) {
                 List(users) { user in
-                    Text(user.name)
+                    NavigationLink {
+                        UsersView(users: users, selected_id: user.id)
+                    } label: {
+                        Text(user.name)
+                    }
                 }
             }
             .navigationTitle("FriendFace")
