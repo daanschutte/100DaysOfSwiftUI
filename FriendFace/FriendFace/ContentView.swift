@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct ContentView: View {
+    @FetchRequest(sortDescriptors: []) var cachedUsers: FetchedResults<CachedUser>
+    
     @State private var users = [User]()
 
     var body: some View {
@@ -23,35 +25,38 @@ struct ContentView: View {
             }
             .navigationTitle("FriendFace")
             .task {
-                if users.count <= 0 {
-                    print("Fetching users")
-                    await loadData()
-                } else {
-                    print("Using existing users")
+                if let retrievedUsers = await loadData() {
+                    print("Users loaded")
+                    users = retrievedUsers
                 }
             }
         }
     }
-
-    func loadData() async {
-        guard let url = URL(string: "https://www.hackingwithswift.com/samples/friendface.json")
-        else {
+    
+    func loadData() async -> [User]? {
+        guard let url = URL(string: "https://www.hackingwithswift.com/samples/friendface.json") else {
             print("Invalid URL")
-            return
+            return nil
         }
-
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        
         do {
-            let (data, _) = try await URLSession.shared.data(from: url)
-            let decoder = JSONDecoder()
-            decoder.dateDecodingStrategy = .iso8601
+            let (data, _) = try await URLSession.shared.data(for: request)
             if let decodedResponse = try? decoder.decode([User].self, from: data) {
-                users = decodedResponse
+                return decodedResponse
             } else {
                 print("Could not decode user data")
             }
         } catch {
-            print("Invalid data")
+            print(error)
         }
+        return nil
     }
 }
 

@@ -22,5 +22,3 @@ class DataController: ObservableObject {
         }
     }
 }
-
-
