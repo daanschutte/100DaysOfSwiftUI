@@ -20,16 +20,7 @@ struct User: Codable, Identifiable {
     let tags: [String]
     let friends: [Friend]
 
-    var formattedDate: String {
+     var formattedDate: String {
         registered.formatted(date: .abbreviated, time: .omitted)
-    }
-
-    // This should be implemented such that it only takes 2/3 letters if the user has >= 3 names
-    var initials: String {
-        return name
-            .split(separator: " ")
-            .map { $0.first?.description ?? "X" }
-            .map { $0.uppercased() }
-            .joined(separator: "")
     }
 }
