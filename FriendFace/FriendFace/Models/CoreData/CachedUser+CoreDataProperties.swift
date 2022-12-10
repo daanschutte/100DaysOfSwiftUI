@@ -6,8 +6,8 @@
 //
 //
 
-import Foundation
 import CoreData
+import Foundation
 
 
 extension CachedUser {
@@ -25,13 +25,7 @@ extension CachedUser {
     @NSManaged public var isActive: Bool
     @NSManaged public var name: String?
     @NSManaged public var formattedDate: String?
-    @NSManaged public var tags: String?
     @NSManaged public var friends: NSSet?
-    
-    var wrappedId: UUID {
-        id ?? UUID()
-    }
-
 
     var wrappedAbout: String {
         about ?? "Unknown"
@@ -51,10 +45,6 @@ extension CachedUser {
 
     var wrappedName: String {
         name ?? "Unknown"
-    }
-
-    var wrappedTags: String {
-        tags ?? ""
     }
 
     var wrappedFormattedDate: String {
@@ -98,22 +88,3 @@ extension CachedUser {
 extension CachedUser : Identifiable {
 
 }
-
-//extension CachedUser {
-//    
-//    public func toUser() -> User {
-//        User(
-//            id: wrappedId,
-//            isActive: isActive,
-//            age: Int(age),
-//            name: wrappedName,
-//            company: wrappedCompany,
-//            email: wrappedEmail,
-//            address: wrappedAddress,
-//            about: wrappedAbout,
-//            registered: wrappedFormattedDate,
-//            tags: wrappedTags,
-//            friends: friendsArray
-//        )
-//    }
-//}

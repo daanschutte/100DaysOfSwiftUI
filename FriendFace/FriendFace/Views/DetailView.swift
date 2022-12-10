@@ -47,7 +47,7 @@ struct DetailView: View {
             }
 
             Section {
-                Text("\(user.wrappedAbout)")
+                Text(user.wrappedAbout)
             } header: {
                 Text("About")
             }
