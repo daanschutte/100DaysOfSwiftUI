@@ -14,6 +14,7 @@ struct ContentView: View {
     @State private var filterIntensity = 0.5
     @State private var image: Image?
     @State private var inputImage: UIImage?
+    @State private var processedImage: UIImage?
     @State private var showingImagePicker = false
     @State private var showingFilterSheet = false
     
@@ -61,14 +62,14 @@ struct ContentView: View {
                 ImagePicker(image: $inputImage)
             }
             .confirmationDialog("Select a filter", isPresented: $showingFilterSheet) {
-                Button("Crystallize") { setFilter(CIFilter.crystallize() )}
-                Button("Edges") { setFilter(CIFilter.edges() )}
-                Button("Gaussian Blur") { setFilter(CIFilter.gaussianBlur() )}
-                Button("Pixellate") { setFilter(CIFilter.pixellate() )}
-                Button("Sepia Tone") { setFilter(CIFilter.sepiaTone() )}
-                Button("Unsharp Mask") { setFilter(CIFilter.unsharpMask() )}
-                Button("Vibrance") { setFilter(CIFilter.vibrance() )}
-                Button("Vignette") { setFilter(CIFilter.vignette() )}
+                Button("Crystallize") { setFilter(CIFilter.crystallize()) }
+                Button("Edges") { setFilter(CIFilter.edges()) }
+                Button("Gaussian Blur") { setFilter(CIFilter.gaussianBlur()) }
+                Button("Pixellate") { setFilter(CIFilter.pixellate()) }
+                Button("Sepia Tone") { setFilter(CIFilter.sepiaTone()) }
+                Button("Unsharp Mask") { setFilter(CIFilter.unsharpMask()) }
+                Button("Vibrance") { setFilter(CIFilter.vibrance()) }
+                Button("Vignette") { setFilter(CIFilter.vignette()) }
                 
                 Button("Cancel", role: .cancel) { }
             }
@@ -84,7 +85,18 @@ struct ContentView: View {
     }
     
     func save() {
-        // todo
+        guard let processedImage = processedImage else { return }
+        
+        let imageSaver = ImageSaver()
+        imageSaver.successHandler = {
+            print("Success!")
+        }
+        
+        imageSaver.errorHanfler = {
+            print("Oops! \($0.localizedDescription)")
+        }
+        
+        imageSaver.writeToPhotoAlbum(image: processedImage)
     }
     
     func applyProcessing() {
@@ -105,6 +117,7 @@ struct ContentView: View {
         if let cgimg = context.createCGImage(outputImage, from: outputImage.extent) {
             let uiImage = UIImage(cgImage: cgimg)
             image = Image(uiImage: uiImage)
+            processedImage = uiImage
         }
     }
     
