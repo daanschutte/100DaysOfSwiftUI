@@ -12,6 +12,8 @@ import SwiftUI
 struct ContentView: View {
     @State private var currentFilter: CIFilter = CIFilter.sepiaTone()
     @State private var filterIntensity = 0.5
+    @State private var filterRadius = 0.5
+    @State private var filterScale = 0.5
     @State private var image: Image?
     @State private var inputImage: UIImage?
     @State private var processedImage: UIImage?
@@ -39,11 +41,32 @@ struct ContentView: View {
                     showingImagePicker = true
                 }
                 
-                HStack {
-                    Text("Intensity")
-                    Slider(value: $filterIntensity)
-                        .onChange(of: filterIntensity) { _ in applyProcessing() }
+                VStack {
+                    if filterHasKey(kCIInputIntensityKey) {
+                        HStack {
+                            Text("Intensity")
+                            Slider(value: $filterIntensity, in: 0.1...1.0)
+                                .onChange(of: filterIntensity) { _ in applyProcessing() }
+                        }
+                    }
+                    
+                    if filterHasKey(kCIInputRadiusKey) {
+                        HStack {
+                            Text("Radius")
+                            Slider(value: $filterRadius, in: 0.1...1.0)
+                                .onChange(of: filterRadius) { _ in applyProcessing() }
+                        }
+                    }
+                    
+                    if filterHasKey(kCIInputScaleKey) {
+                        HStack {
+                            Text("Scale")
+                            Slider(value: $filterScale, in: 0.1...1.0)
+                                .onChange(of: filterScale) { _ in applyProcessing() }
+                        }
+                    }
                 }
+                
                 
                 HStack {
                     Button("Change filter") {
@@ -100,17 +123,21 @@ struct ContentView: View {
         imageSaver.writeToPhotoAlbum(image: processedImage)
     }
     
+    func filterHasKey(_ key: String) -> Bool {
+        currentFilter.inputKeys.contains(key)
+    }
+    
     func applyProcessing() {
-        let inputKeys = currentFilter.inputKeys
-        
-        if inputKeys.contains(kCIInputIntensityKey) {
+        if filterHasKey(kCIInputIntensityKey) {
             currentFilter.setValue(filterIntensity, forKey: kCIInputIntensityKey)
         }
-        if inputKeys.contains(kCIInputRadiusKey) {
-            currentFilter.setValue(filterIntensity * 200, forKey: kCIInputRadiusKey)
+        
+        if filterHasKey(kCIInputRadiusKey) {
+            currentFilter.setValue(filterRadius * 200, forKey: kCIInputRadiusKey)
         }
-        if inputKeys.contains(kCIInputScaleKey) {
-            currentFilter.setValue(filterIntensity * 10, forKey: kCIInputScaleKey)
+        
+        if filterHasKey(kCIInputScaleKey) {
+            currentFilter.setValue(filterScale * 180, forKey: kCIInputScaleKey)
         }
         
         guard let outputImage = currentFilter.outputImage else { return }
@@ -123,6 +150,10 @@ struct ContentView: View {
     }
     
     func setFilter(_ filter: CIFilter) {
+        filterIntensity = 0.5
+        filterRadius = 0.5
+        filterScale = 0.5
+        
         currentFilter = filter
         loadImage()
     }
