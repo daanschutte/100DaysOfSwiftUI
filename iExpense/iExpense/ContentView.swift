@@ -29,6 +29,9 @@ struct ExpenseItemListView: View {
                         Text(item.amount, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
                             .foregroundColor(getForegroundColor(item.amount))
                     }
+                    .accessibilityElement()
+                    .accessibilityLabel("\(item.name), \(item.amount)")
+                    .accessibilityHint("\(item.type)")
                 }
             }
             .onDelete(perform: removeItems)
