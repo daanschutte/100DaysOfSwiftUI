@@ -8,22 +8,18 @@
 import SwiftUI
 
 struct EditView: View {
-    @StateObject private var viewModel = ViewModel()
+    @StateObject private var viewModel: ViewModel
     
     @Environment(\.dismiss) var dismiss
     
-    var location: Location
     var onSave: (Location) -> Void
-    
-    @State private var name: String
-    @State private var description: String
     
     var body: some View {
         NavigationStack {
             Form {
                 Section {
-                    TextField("Place name", text: $name)
-                    TextField("Description", text: $description)
+                    TextField("Place name", text: $viewModel.name)
+                    TextField("Description", text: $viewModel.description)
                 }
                 
                 Section("Nearby...") {
@@ -46,30 +42,20 @@ struct EditView: View {
             .navigationTitle("Place details")
             .toolbar {
                 Button("Save") {
-                    let newLocation = Location(
-                        id: UUID(),
-                        name: name,
-                        description: description,
-                        latitude: location.latitude,
-                        longitude: location.longitude
-                    )
-                    
-                    onSave(newLocation)
+                    onSave(viewModel.updatedLocation())
                     dismiss()
                 }
             }
             .task {
-                await viewModel.fetchNearbyPlaces(location: location)
+                await viewModel.fetchNearbyPlaces(location: viewModel.location)
             }
         }
     }
     
     init(location: Location, onSave: @escaping (Location) -> Void) {
-        self.location = location
-        self.onSave = onSave
+        _viewModel = StateObject(wrappedValue: ViewModel(location: location))
         
-        _name = State(initialValue: location.name)
-        _description = State(initialValue: location.description)
+        self.onSave = onSave
     }
 }
 

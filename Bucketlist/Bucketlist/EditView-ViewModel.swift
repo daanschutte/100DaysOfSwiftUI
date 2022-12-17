@@ -13,12 +13,29 @@ extension EditView {
             case loading, loaded, failed
         }
         
+        @Published var location: Location
+        @Published var name: String
+        @Published var description: String
         @Published var loadingState: LoadingState
         @Published var pages: [Page]
         
-        init() {
+        init(location: Location) {
+            self.location = location
             self.loadingState = .loading
             self.pages = []
+            
+            _name = Published(initialValue: location.name)
+            _description = Published(initialValue: location.description)
+        }
+        
+        func updatedLocation() -> Location {
+            Location(
+                id: UUID(),
+                name: name,
+                description: description,
+                latitude: location.latitude,
+                longitude: location.longitude
+            )
         }
         
         func fetchNearbyPlaces(location: Location) async {
