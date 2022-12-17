@@ -34,14 +34,13 @@ struct ContentView: View {
                         HStack {
                             Spacer()
                             
-                            ForEach(3..<9) { i in
-                                let words = usedWordsWithLength(chars: i)
-                                if words > 0 {
-                                    HStack {
-                                        Image(systemName: "\(i).circle")
-                                        Text("= \(words)")
-                                    }
+                            ForEach(usedWords, id: \.self) { word in
+                                HStack {
+                                    Image(systemName: "\(word.count).circle")
+                                    Text(word)
                                 }
+                                .accessibilityElement()
+                                .accessibilityLabel("\(word), \(word.count) letters")
                             }
                             
                             Spacer()
