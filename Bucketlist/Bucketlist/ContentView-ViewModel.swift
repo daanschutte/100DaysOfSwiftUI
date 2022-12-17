@@ -19,6 +19,9 @@ extension ContentView {
         @Published var selectedPlace: Location?
         @Published var isUnlocked = false
         
+        @Published var showingAlert = false
+        @Published private(set) var alertMessage = ""
+        
         let savePath = FileManager.documentsDirectory.appendingPathComponent("SavedPlaces")
         
         init() {
@@ -66,19 +69,21 @@ extension ContentView {
             
             if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) {
                 let reason = "Please authenticate yourself to unlock your places."
-
+                
                 context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: reason) {
                     success, authenicationError in
-                    if success {
-                        Task { @MainActor in
+                    Task { @MainActor in
+                        if success {
                             self.isUnlocked = true
+                        } else {
+                            self.alertMessage = "Could not authenticate."
+                            self.showingAlert = true
                         }
-                    } else {
-                        // error
                     }
                 }
             } else {
-                // no biometrics
+                alertMessage = "Biometric authentication has not been enabled on this device."
+                showingAlert = true
             }
         }
     }
