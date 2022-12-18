@@ -8,11 +8,15 @@
 import CoreImage
 import SwiftUI
 
-struct ContentView: View {
+struct ContentView: View {    
     @State private var image: Image?
     @State private var inputImage: UIImage?
     
+    @State private var name = ""
     @State private var showingPicker = false
+    @State private var showingNameInput = false
+    
+    private var images = [String: Image]()
     
     var body: some View {
         ZStack {
@@ -27,13 +31,20 @@ struct ContentView: View {
             showingPicker = true
             
         }
-        .sheet(isPresented: $showingPicker) {
-            ImagePicker(image: $inputImage)
-        }
         .onChange(of: inputImage) { _ in
             loadImage()
         }
+        .onChange(of: image) { _ in
+            showingNameInput = true
+        }
+        .sheet(isPresented: $showingPicker) {
+            ImagePicker(image: $inputImage)
+        }
+        .sheet(isPresented: $showingNameInput) {
+            NameInputView(name: $name, image: image)
+        }
     }
+    
     
     func loadImage() {
         guard let inputImage = inputImage else { return }
