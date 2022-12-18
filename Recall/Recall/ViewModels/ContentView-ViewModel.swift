@@ -28,5 +28,13 @@ extension ContentView {
             guard let inputImage = inputImage else { return }
             image = Image(uiImage: inputImage)
         }
+        
+        func saveImage() {
+            images[name] = image
+            image = nil
+            name = ""
+        }
+        
+        // TODO: persist data, load on start
     }
 }

@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+// Not the prettiest, playing with modifiers
 struct NameInputView: View {
     @Environment(\.dismiss) var dismiss
     
@@ -25,11 +26,10 @@ struct NameInputView: View {
                 Spacer()
             }
             
-            
             image?
                 .resizable()
                 .scaledToFit()
-                .padding()
+                .padding(10)
                 .border(.brown)
                 .rotationEffect(Angle(degrees: 2))
                 .padding()
