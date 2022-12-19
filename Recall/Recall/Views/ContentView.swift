@@ -15,25 +15,15 @@ struct ContentView: View {
     
     var body: some View {
         NavigationStack {
-            ZStack {
+            VStack {
                 if viewModel.images.count > 0 {
-                    List{
-                        ForEach(Array(viewModel.images), id: \.key) { name, image in
-                            HStack {
-                                image
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 60, height: 60)
-                                
-                                Text(name)
-                            }
-                        }
+                    List(Array(viewModel.images), id: \.key) { name, image in
+                        ListItemView(name: name, image: image)
                     }
                 } else {
                     Button("Add Image") {
                         showingPicker = true
                     }
-                    .foregroundColor(.blue)
                 }
             }
             .toolbar {
