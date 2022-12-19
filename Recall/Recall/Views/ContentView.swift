@@ -44,7 +44,7 @@ struct ContentView: View {
                 ImagePicker(image: $viewModel.inputImage)
             }
             .sheet(isPresented: $showingNameInput) {
-                NameInputView(name: $viewModel.name, image: viewModel.image)
+                DetailView(name: $viewModel.name, image: viewModel.image)
                     .onDisappear {
                         viewModel.saveImage()
                     }

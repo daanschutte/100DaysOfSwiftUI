@@ -8,7 +8,7 @@
 import SwiftUI
 
 // Not the prettiest, playing with modifiers
-struct NameInputView: View {
+struct DetailView: View {
     @Environment(\.dismiss) var dismiss
     
     @Binding var name: String
@@ -48,7 +48,7 @@ struct NameInputView_Previews: PreviewProvider {
     @State static var name = ""
     static var previews: some View {
         NavigationStack {
-            NameInputView(name: $name, image: Image("example"))
+            DetailView(name: $name, image: Image("example"))
         }
     }
 }

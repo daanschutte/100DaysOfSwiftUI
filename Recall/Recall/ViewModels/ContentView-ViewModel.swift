@@ -13,6 +13,7 @@ extension ContentView {
         @Published var image: Image?
         @Published var inputImage: UIImage?
         @Published var name: String
+        
         @Published var people = [Person]()
         
         init() {
