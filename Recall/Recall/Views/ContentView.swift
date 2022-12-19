@@ -15,14 +15,14 @@ struct ContentView: View {
     
     var body: some View {
         NavigationStack {
-            VStack {
-                if viewModel.images.count > 0 {
-                    List(Array(viewModel.images), id: \.key) { name, image in
-                        ListItemView(name: name, image: image)
-                    }
-                } else {
-                    Button("Add Image") {
-                        showingPicker = true
+            ZStack {
+                Button("Add Image") {
+                    showingPicker = true
+                }
+                
+                if viewModel.people.count > 0 {
+                    List(viewModel.people.sorted()) { person in
+                        ListItemView(person: person)
                     }
                 }
             }

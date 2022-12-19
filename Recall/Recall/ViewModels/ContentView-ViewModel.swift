@@ -13,15 +13,13 @@ extension ContentView {
         @Published var image: Image?
         @Published var inputImage: UIImage?
         @Published var name: String
-        
-        @Published var images = [String: Image]()
+        @Published var people = [Person]()
         
         init() {
             self.image = nil
             self.inputImage = nil
             
             _name = Published(initialValue: "")
-            
         }
         
         func loadImage() {
@@ -30,7 +28,10 @@ extension ContentView {
         }
         
         func saveImage() {
-            images[name] = image
+            guard let personImage = image else { return }
+            let newPerson = Person(name: name, image: personImage)
+            people.append(newPerson)
+            
             image = nil
             name = ""
         }

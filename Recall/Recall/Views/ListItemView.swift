@@ -8,17 +8,16 @@
 import SwiftUI
 
 struct ListItemView: View {
-     var name: String
-     var image: Image
+    var person: Person
     
     var body: some View {
         HStack {
-            image
+            person.image
                 .resizable()
                 .scaledToFit()
                 .frame(width: 100, height: 100)
             
-            Text(name)
+            Text(person.name)
             
             Spacer()
         }
@@ -26,9 +25,9 @@ struct ListItemView: View {
 }
 
 struct ListItemView_Previews: PreviewProvider {
-    static let image = Image("example")
+    static let person = Person(name: "Bezoz", image: Image("example"))
     
     static var previews: some View {
-        ListItemView(name: "George", image: image)
+        ListItemView(person: person)
     }
 }
