@@ -30,20 +30,24 @@ struct ContentView: View {
                         }
                     }
                 } else {
-                    Text("Add Image")
-                        .foregroundColor(.blue)
-                    // TODO: once this is removed we need some way to keep adding people
+                    Button("Add Image") {
+                        showingPicker = true
+                    }
+                    .foregroundColor(.blue)
                 }
             }
-            // TODO: review these onEvents
-            .onTapGesture {
-                showingPicker = true
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        showingPicker = true
+                    } label: {
+                        Image(systemName: "plus")
+                            .padding(.horizontal)
+                    }
+                }
             }
             .onChange(of: viewModel.inputImage) { _ in
                 viewModel.loadImage()
-            }
-            .onChange(of: viewModel.image) { _ in
-                // TODO: this is breaking the picker when it gets set to nil again on saveImage
                 showingNameInput = true
             }
             .sheet(isPresented: $showingPicker) {

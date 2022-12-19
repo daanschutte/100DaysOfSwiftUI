@@ -40,7 +40,6 @@ struct NameInputView: View {
             Button("Ok") {
                 dismiss()
             }
-            
         }
     }
 }
