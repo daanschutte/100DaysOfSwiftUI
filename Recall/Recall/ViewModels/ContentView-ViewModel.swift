@@ -14,14 +14,14 @@ extension ContentView {
         @Published var inputImage: UIImage?
         @Published var name: String
         
-        @Published var people: [Person]
+        @Published private(set) var people: [Person]
         
         let savePath = FileManager.documentsDirectory.appendingPathComponent("SavedPeople")
         let imagesPath = FileManager.documentsDirectory
         
         init() {
-            self.image = nil
-            self.inputImage = nil
+            image = nil
+            inputImage = nil
             
             _name = Published(initialValue: "")
             
@@ -32,81 +32,52 @@ extension ContentView {
                 people = []
             }
             
-            
-            
-            let enriched: [Person] = people.map {
-                guard let savedImage = loadImageFromDiskWith(fileName: $0.id.uuidString) else {
-                    return $0
-                }
-                let image = Image(uiImage: savedImage)
-                print("image was found")
-                return Person(id: $0.id, name: $0.name, image: image)
-            }
-            
-            
-            
-            self.people = enriched
-            
-//            for var p in people {
-//                guard let loadedImage = loadImageFromDiskWith(fileName: p.id.uuidString) else {
-//                    print("Failed to load image from file")
-//                    return
-//                }
-//
-//                print("try to assign uimage")
-//
-//                p.image = Image(uiImage: loadedImage)
-//            }
+            people = people.map { addUserImageFromDisk(person: $0) }
         }
         
-        func loadImageFromDiskWith(fileName: String) -> UIImage? {
-            let imageUrl = FileManager.documentsDirectory.appendingPathComponent(fileName)
-            let image = UIImage(contentsOfFile: imageUrl.path)
-            
-            if image == nil { print("image was not loaded") }
-            
-            return image
+        private func addUserImageFromDisk(person: Person) -> Person {
+            let imageUrl = FileManager.documentsDirectory.appendingPathComponent(person.id.uuidString)
+            guard let savedImage = UIImage(contentsOfFile: imageUrl.path) else {
+                print("Failed to locate image for user \(person.id.uuidString)")
+                return person
+            }
+            let image = Image(uiImage: savedImage)
+            return Person(id: person.id, name: person.name, image: image)
         }
+        
         
         func loadImage() {
             guard let inputImage = inputImage else { return }
             image = Image(uiImage: inputImage)
         }
         
-        func addImage() {
-            guard let personImage = image else { return }
-            let newPerson = Person(id: UUID(), name: name, image: personImage)
+        func addPerson() {
+            guard let newImage = image else { return }
+            let newPerson = Person(id: UUID(), name: name, image: newImage)
             people.append(newPerson)
             
-            save()
-            saveImage(filename: newPerson.id.uuidString)
+            savePerson(id: newPerson.id.uuidString)
             
             image = nil
             name = ""
         }
         
-        func save() {
+        func savePerson(id: String) {
             do {
                 let data = try JSONEncoder().encode(people)
                 try data.write(to: savePath, options: [.atomicWrite, .completeFileProtection])
             } catch {
                 print("Could not save data")
             }
+            
+            saveImage(filename: id)
         }
         
-        func saveImage(filename: String) {
-            guard let inputImage = inputImage else { return }
-            let imageSaver = ImageSaver()
-            imageSaver.successHandler = { print("Image saved") }
-            imageSaver.errorHanfler = { print("There was an error saving the image: \($0.localizedDescription)") }
-            
+        private func saveImage(filename: String) {
             let url = imagesPath.appendingPathComponent(filename)
+            guard let inputImage = inputImage else { return }
             if let jpegData = inputImage.jpegData(compressionQuality: 0.8) {
-                do {
-                    try jpegData.write(to: url, options: [.atomicWrite, .completeFileProtection])
-                } catch {
-                    print("Error saving image: \(error.localizedDescription)")
-                }
+                try? jpegData.write(to: url, options: [.atomicWrite, .completeFileProtection])
             }
         }
     }
