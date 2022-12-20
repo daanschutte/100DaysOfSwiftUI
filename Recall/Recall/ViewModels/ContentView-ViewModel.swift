@@ -17,7 +17,6 @@ extension ContentView {
         @Published private(set) var people: [Person]
         
         let savePath = FileManager.documentsDirectory.appendingPathComponent("SavedPeople")
-        let imagesPath = FileManager.documentsDirectory
         
         init() {
             image = nil
@@ -32,19 +31,8 @@ extension ContentView {
                 people = []
             }
             
-            people = people.map { addUserImageFromDisk(person: $0) }
+            people = people.map { addSavedImage(to: $0) }
         }
-        
-        private func addUserImageFromDisk(person: Person) -> Person {
-            let imageUrl = FileManager.documentsDirectory.appendingPathComponent(person.id.uuidString)
-            guard let savedImage = UIImage(contentsOfFile: imageUrl.path) else {
-                print("Failed to locate image for user \(person.id.uuidString)")
-                return person
-            }
-            let image = Image(uiImage: savedImage)
-            return Person(id: person.id, name: person.name, image: image)
-        }
-        
         
         func loadImage() {
             guard let inputImage = inputImage else { return }
@@ -72,9 +60,19 @@ extension ContentView {
             
             saveImage(filename: id)
         }
+
+        private func addSavedImage(to person: Person) -> Person {
+            let imageUrl = FileManager.documentsDirectory.appendingPathComponent(person.id.uuidString)
+            guard let savedImage = UIImage(contentsOfFile: imageUrl.path) else {
+                print("Failed to locate image for user \(person.id.uuidString)")
+                return person
+            }
+            let image = Image(uiImage: savedImage)
+            return Person(id: person.id, name: person.name, image: image)
+        }
         
         private func saveImage(filename: String) {
-            let url = imagesPath.appendingPathComponent(filename)
+            let url = FileManager.documentsDirectory.appendingPathComponent(filename)
             guard let inputImage = inputImage else { return }
             if let jpegData = inputImage.jpegData(compressionQuality: 0.8) {
                 try? jpegData.write(to: url, options: [.atomicWrite, .completeFileProtection])
