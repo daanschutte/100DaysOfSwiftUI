@@ -12,7 +12,7 @@ struct ListItemView: View {
     
     var body: some View {
         HStack {
-            person.image
+            person.image?
                 .resizable()
                 .scaledToFit()
                 .frame(width: 100, height: 100)
@@ -25,7 +25,7 @@ struct ListItemView: View {
 }
 
 struct ListItemView_Previews: PreviewProvider {
-    static let person = Person(name: "Bezoz", image: Image("example"))
+    static let person = Person(id: UUID(), name: "Bezoz", image: Image("example"))
     
     static var previews: some View {
         ListItemView(person: person)

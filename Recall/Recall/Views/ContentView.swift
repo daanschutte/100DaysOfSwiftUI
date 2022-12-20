@@ -46,7 +46,7 @@ struct ContentView: View {
             .sheet(isPresented: $showingNameInput) {
                 DetailView(name: $viewModel.name, image: viewModel.image)
                     .onDisappear {
-                        viewModel.saveImage()
+                        viewModel.addImage()
                     }
             }
             .navigationTitle("Recaller")
