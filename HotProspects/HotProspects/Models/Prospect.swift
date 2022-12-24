@@ -17,15 +17,36 @@ class Prospect: Identifiable, Codable {
 }
 
 @MainActor class Prospects: ObservableObject {
-    @Published var people: [Prospect]
+    @Published private(set) var people: [Prospect]
+    
+    let saveKey = "SavedData"
     
     init() {
+        if let data = UserDefaults.standard.data(forKey: saveKey) {
+            if let decoded = try? JSONDecoder().decode([Prospect].self, from: data) {
+                people = decoded
+                return
+            }
+        }
+        
         people = []
+    }
+    
+    func add(_ prospect: Prospect) {
+        people.append(prospect)
+        save()
     }
     
     // Updates to `isContacted` must be published to prevent a stale UI
     func toggle(_ prospect: Prospect) {
         objectWillChange.send()
         prospect.isContacted.toggle()
+        save()
+    }
+    
+    private func save() {
+        if let encoded = try? JSONEncoder().encode(people) {
+            UserDefaults.standard.set(encoded, forKey: saveKey)
+        }
     }
 }
