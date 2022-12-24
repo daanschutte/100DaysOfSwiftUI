@@ -29,7 +29,7 @@ struct MeView: View {
                 TextField("Email", text: $emailAddress)
                     .textContentType(.emailAddress)
                     .font(.title)
-
+                
                 Image(uiImage: qrCode)
                     .resizable()
                     .interpolation(.none)
