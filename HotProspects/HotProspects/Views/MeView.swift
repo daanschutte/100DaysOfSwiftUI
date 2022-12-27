@@ -17,8 +17,6 @@ struct MeView: View {
     let context = CIContext()
     let filter = CIFilter.qrCodeGenerator()
     
-    
-    
     var body: some View {
         NavigationStack {
             Form {
