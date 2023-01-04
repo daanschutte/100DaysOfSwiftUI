@@ -5,27 +5,29 @@
 //  Created by Daan Schutte on 27/12/2022.
 //
 
-import CoreHaptics
 import SwiftUI
 
 struct ContentView: View {
+    let timer = Timer.publish(every: 1, tolerance: 0.5, on: .main, in: .common).autoconnect()
+    @State private var counter = 0
+    
     var body: some View {
-        ZStack {
-            Rectangle()
-                .fill(.blue)
-                .frame(width: 300, height: 300)
-                .onTapGesture {
-                    print("Rectangle tapped!")
-                }
+        VStack {
+            Image(systemName: "globe")
+                .imageScale(.large)
+                .foregroundColor(.accentColor)
+            Text("Hello, world!")
+        }
+        .padding()
+        .onReceive(timer) { time in
             
-            Circle()
-                .fill(.red)
-                .frame(width: 300, height: 300)
-//                .contentShape(Rectangle()) // use whole frame of circle
-                .onTapGesture {
-                    print("Circle tapped!")
-                }
-//                .allowsHitTesting(false) // tap through the circle
+            if counter == 5 {
+                timer.upstream.connect().cancel()
+            } else {
+                print("The time is now \(time)")
+            }
+            
+            counter += 1
         }
     }
 }
