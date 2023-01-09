@@ -39,7 +39,9 @@ struct EditCardsView: View {
                         }
                     }
                     .onDelete { indexSet in
-                        viewModel.removeCard(at: indexSet)
+                        withAnimation {
+                            viewModel.removeCard(at: indexSet)
+                        }
                     }
                 }
             }

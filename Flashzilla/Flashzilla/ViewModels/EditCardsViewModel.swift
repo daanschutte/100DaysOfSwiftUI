@@ -12,6 +12,8 @@ extension EditCardsView {
         
         @Published private(set) var cards = [Card]()
         
+        private let dataKey = "Cards"
+        
         func removeCard(at offset: IndexSet) {
             Task {
                 await MainActor.run {
@@ -35,14 +37,14 @@ extension EditCardsView {
         
         func saveData() {
             if let data = try? JSONEncoder().encode(cards) {
-                UserDefaults.standard.set(data, forKey: "Cards")
+                UserDefaults.standard.set(data, forKey: dataKey)
             }
         }
         
         func loadData() {
             Task {
                 await MainActor.run {
-                    if let data = UserDefaults.standard.data(forKey: "Cards") {
+                    if let data = UserDefaults.standard.data(forKey: dataKey) {
                         if let decoded = try? JSONDecoder().decode([Card].self, from: data) {
                             cards = decoded
                         }
