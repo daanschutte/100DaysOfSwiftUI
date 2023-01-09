@@ -19,12 +19,13 @@ struct ContentView: View {
     @Environment(\.accessibilityVoiceOverEnabled) var voiceOverEnabled
     @Environment(\.scenePhase) var scenePhase
     
-    @State private var cards = Array<Card>(repeating: Card.example, count: 10)
+    @State private var cards = [Card]()
     @State private var timeRemaining = 100
     @State private var isActive = true
+    @State private var isShowingEditScreen = false
     
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
-
+    
     var body: some View {
         ZStack {
             Image("background")
@@ -62,6 +63,26 @@ struct ContentView: View {
                         .clipShape(Capsule())
                 }
             }
+            
+            VStack {
+                HStack {
+                    Spacer()
+                    
+                    Button {
+                        isShowingEditScreen = true
+                    } label: {
+                        Image(systemName: "plus.circle")
+                            .padding()
+                            .background(.black.opacity(0.75))
+                            .clipShape(Circle())
+                    }
+                }
+                
+                Spacer()
+            }
+            .foregroundColor(.white)
+            .font(.largeTitle)
+            .padding()
             
             // Accessibility
             if differentiateWithoutColor || voiceOverEnabled {
@@ -119,6 +140,8 @@ struct ContentView: View {
                 isActive = false
             }
         }
+        .sheet(isPresented: $isShowingEditScreen, onDismiss: resetCards, content: EditCardsView.init)
+        .onAppear(perform: resetCards)
     }
     
     func removeCard(at index: Int) {
@@ -131,9 +154,17 @@ struct ContentView: View {
         }
     }
     
+    func loadData() {
+        if let data = UserDefaults.standard.data(forKey: "Cards") {
+            if let decoded = try? JSONDecoder().decode([Card].self, from: data) {
+                cards = decoded
+            }
+        }
+    }
+    
     func resetCards() {
-        cards = Array<Card>(repeating: Card.example, count: 10)
-        timeRemaining = 100
+        loadData()
+        timeRemaining = cards.count * 4
         isActive = true
     }
 }
