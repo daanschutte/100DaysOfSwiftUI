@@ -7,26 +7,30 @@
 
 import SwiftUI
 
-struct User: Identifiable {
-    var id = "Tay Tay"
+struct UserView: View {
+    var body: some View {
+        Group {
+            Text("Name: Paul")
+            Text("Country: England")
+            Text("Pets: Luna and Arya")
+        }
+        .font(.title)
+    }
 }
 
 struct ContentView: View {
-    @State private var selectedUser: User? = nil
-    @State private var isShowingUser = false
+    @Environment(\.horizontalSizeClass) var sizeClass
     
     var body: some View {
-        Text("Hello, world!")
-            .onTapGesture {
-                selectedUser = User()
+        if sizeClass == .compact {
+            HStack {
+                UserView()
             }
-            .sheet(item: $selectedUser) { user in
-                Text(user.id)
-                    .onTapGesture {
-                        isShowingUser = true
-                    }
-                    .alert("Eat it Kanye", isPresented: $isShowingUser) { }
+        } else{
+            VStack {
+                UserView()
             }
+        }
     }
 }
 
