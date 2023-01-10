@@ -7,29 +7,26 @@
 
 import SwiftUI
 
-struct UserView: View {
-    var body: some View {
-        Group {
-            Text("Name: Paul")
-            Text("Country: England")
-            Text("Pets: Luna and Arya")
-        }
-        .font(.title)
-    }
-}
-
 struct ContentView: View {
-    @Environment(\.horizontalSizeClass) var sizeClass
+    @State private var searchText = ""
+    
+    let allNames = ["Kaladin", "Moash", "Shallan", "Szeth"]
     
     var body: some View {
-        if sizeClass == .compact {
-            HStack {
-                UserView()
+        NavigationView {
+            List(filterNames, id: \.self) { name in
+                Text(name)
             }
-        } else{
-            VStack {
-                UserView()
-            }
+            .searchable(text: $searchText, prompt: "Look for something")
+            .navigationTitle("Searching")
+        }
+    }
+    
+    var filterNames: [String] {
+        if searchText.isEmpty {
+            return allNames
+        } else {
+            return allNames.filter { $0.localizedCaseInsensitiveContains(searchText) }
         }
     }
 }
