@@ -7,6 +7,28 @@
 
 import SwiftUI
 
+extension View {
+    func colorizedSwipe(offset: CGSize, color differentiateWithoutColor: Bool) -> some View {
+        modifier(ColorizedSwipe(offset: offset, differentiateWithoutColor: differentiateWithoutColor))
+    }
+}
+
+struct ColorizedSwipe: ViewModifier {
+    let offset: CGSize
+    let differentiateWithoutColor: Bool
+    
+    func body(content: Content) -> some View {
+        content.background(
+            differentiateWithoutColor
+            ? nil
+            : RoundedRectangle(cornerRadius: 25, style: .continuous)
+                .fill(offset.width == 0 ? Color.white
+                      : offset.width > 0 ? Color.green : Color.red)
+        )
+    }
+}
+
+
 struct CardView: View {
     let card: Card
     var removal: (() -> Void)? = nil
@@ -26,12 +48,7 @@ struct CardView: View {
                     ? .white
                     : .white.opacity(1 - Double(abs(offset.width / 50)))
                 )
-                .background(
-                    differentiateWithoutColor
-                    ? nil
-                    : RoundedRectangle(cornerRadius: 25, style: .continuous)
-                        .fill(offset.width > 0 ? .green : .red)
-                )
+                .colorizedSwipe(offset: offset, color: differentiateWithoutColor)
                 .shadow(radius: 10)
             
             VStack {
