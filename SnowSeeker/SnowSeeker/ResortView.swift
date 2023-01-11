@@ -11,6 +11,8 @@ struct ResortView: View {
     @Environment(\.horizontalSizeClass) var sizeClass
     @Environment(\.dynamicTypeSize) var typeSize
     
+    @EnvironmentObject var favourites: Favourites
+    
     @State private var selectedFacility: Facility?
     @State private var showingFacility = false
     
@@ -54,6 +56,16 @@ struct ResortView: View {
                             }
                         }
                     }
+                    
+                    Button(favourites.contains(resort) ? "Reomve from favourites" : "Add to favourites") {
+                        if favourites.contains(resort) {
+                            favourites.removeResort(resort)
+                        } else {
+                            favourites.addResort(resort)
+                        }
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .padding()
                 }
                 .padding(.horizontal)
             }
@@ -75,5 +87,6 @@ struct ResortView_Previews: PreviewProvider {
         NavigationView {
             ResortView(resort: Resort.example)
         }
+        .environmentObject(Favourites())
     }
 }
